@@ -16,11 +16,11 @@ TabularTables.Books = new (Tabular.Table) (
     name: 'BookList'
     collection: Books
     columns: columns
-    # fixedColumns: true
-  #  scrollY: 300
+    scrollY: 400
     scrollX: true
     scrollCollapse: true
-  #  paging: false
+    fixedColumns: true
+    # paging: false
     responsive: true
     autoWidth: false
   )

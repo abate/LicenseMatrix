@@ -13,5 +13,4 @@ Meteor.startup ->
 
     for cext in spdxLicenseIds
       licence['title'] = cext
-      console.log "insert licence" + licence
       Books.insert licence
