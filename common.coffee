@@ -1,24 +1,29 @@
+console.log "common"
 @Books = new Mongo.Collection 'players'
-@BooksIds = new Mongo.Collection 'playersIds'
 
 TabularTables = {}
 
 Meteor.isClient and Template.registerHelper('TabularTables', TabularTables)
 
-columns = []
-for a in BooksIds.find().fetch()
-  console.log a
-  columns.push { data : a.data, title : a.title }
+console.log "publishing"
 
-console.log "AAA"
-console.log columns
-console.log Books.find().fetch()
-console.log BooksIds.find().fetch()
-console.log "BBB
-"
-TabularTables.Books = new (Tabular.Table)(
-  name: 'BookList'
-  collection: Books
-  columns: columns
-)
-console.log "after Tabular"
+idx = 0
+columns = [ { data: "title" , title : "Title"} ]
+for c in spdxLicenseIds
+  columns.push { data : "lid_" + idx++, title : c}
+
+TabularTables.Books = new (Tabular.Table) (
+    name: 'BookList'
+    collection: Books
+    columns: columns
+    # fixedColumns: true
+  #  scrollY: 300
+    scrollX: true
+    scrollCollapse: true
+  #  paging: false
+    responsive: true
+    autoWidth: false
+  )
+
+Meteor.isClient and console.log Books.find().count()
+Meteor.isClient and console.log "here " + Books.find().count()

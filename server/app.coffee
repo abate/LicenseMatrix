@@ -1,28 +1,17 @@
 #server only code
-
-@spdxLicenseIds = Meteor.npmRequire('spdx-license-ids')
+console.log "server"
 
 Meteor.startup ->
-  console.log "inside startup"
-  if BooksIds.find().count() == 0
-    BooksIds.insert {data: 'title', title: 'Title'}
-    idx = 0
-    for c in spdxLicenseIds[0..10]
-      BooksIds.insert { data : "lid_" + idx++, title : c}
-    console.log BooksIds.find().fetch()
+  console.log "startup"
+  console.log "books count " + Books.find().count()
 
   if Books.find().count() == 0
-
-
-
     licence = {}
     idx = 0
-    for c in spdxLicenseIds[0..10]
+    for c in spdxLicenseIds
       licence["lid_" + idx++] = c
 
-    for cext in spdxLicenseIds[0..10]
+    for cext in spdxLicenseIds
       licence['title'] = cext
-      console.log licence
+      console.log "insert licence" + licence
       Books.insert licence
-
-console.log "after startup"
