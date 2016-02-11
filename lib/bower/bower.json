@@ -2,7 +2,12 @@
   "name": "licencepicker",
   "version": "0.0.1",
   "dependencies": {
-    "bootstrap-select": "v1.9.4"
+    "bootstrap-select": "v1.9.4",
+    "datatables-fixedcolumns": "3.2.0"
   },
+	"overrides": {
+		"datatables-fixedcolumns": { "arch": [ "client" ] },
+		"bootstrap-select": { "arch": [ "client" ] }
+	},
   "private": true
 }

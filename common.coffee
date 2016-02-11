@@ -1,6 +1,12 @@
 console.log "common"
 @Books = new Mongo.Collection 'players'
 
+Books.allow {
+  insert: () -> true
+  update: () -> true
+  remove: () -> true
+}
+
 TabularTables = {}
 
 Meteor.isClient and Template.registerHelper('TabularTables', TabularTables)
@@ -9,14 +15,21 @@ console.log "publishing"
 
 idx = 0
 columns = [ { data: "title" , title : "Title"} ]
-for c in spdxLicenseIds
-  columns.push {
-    data : "lid_" + idx++,
-    title : c
-    tmpl: Meteor.isClient and Template.LicenceSwitch
-    tmplContext: (rowData) -> { item: rowData, column: 'title'}
-    searchable: false
-  }
+for licence in spdxLicenseIds
+  col = "lid_" + idx++
+  v = do (col,licence) -> {
+      searchable: false
+      data : col
+      title : licence
+      tmpl: Meteor.isClient and Template.LicenceSwitch
+      tmplContext: Meteor.isClient and (rowData) -> {
+        data: rowData
+        row : rowData.title
+        col : col
+        selected: rowData[col]
+      }
+    }
+  columns.push v
 
 TabularTables.Books = new (Tabular.Table) (
     name: 'BookList'
@@ -26,6 +39,7 @@ TabularTables.Books = new (Tabular.Table) (
     scrollX: true
     scrollCollapse: true
     fixedColumns: true
+    fixedHeader: true
     # responsive: true
     # autoWidth: false
     bSort: false

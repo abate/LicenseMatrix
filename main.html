@@ -14,9 +14,8 @@
 
 <template name="LicenceSwitch">
   <select class="selectpicker btn-info check-out">
-    <option>Compatible</option>
-    <option>Incompatible</option>
-    <option>Re-licence</option>
+    {{#each categories}}
+        <option value={{this.value}}>{{this.name}}</option>
+    {{/each}}
   </select>
-  <!-- <button type="button" class="btn btn-xs check-out">Compatible</button> -->
 </template>
