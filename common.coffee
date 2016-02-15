@@ -22,9 +22,8 @@ for licence in spdxLicenseIds
       data : col
       title : licence
       tmpl: Meteor.isClient and Template.LicenceSwitch
-      tmplContext: Meteor.isClient and (rowData) -> {
+      tmplContext: Meteor.isClient and Tracker.nonreactive () -> (rowData) -> {
         data: rowData
-        row : rowData.title
         col : col
         selected: rowData[col]
       }

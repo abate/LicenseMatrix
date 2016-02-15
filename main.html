@@ -1,8 +1,8 @@
 <body>
   <div class="container">
     <div class="page-header">
-      <h1>Tabular demo</h1>
-      <p>Reactive data tables in Meteor</p>
+      <h1>Licence Matrix</h1>
+      <p>Licence matric picker</p>
     </div>
       {{> table }}
   </div>
@@ -13,9 +13,9 @@
 </template>
 
 <template name="LicenceSwitch">
-  <select class="selectpicker btn-info check-out">
-    {{#each categories}}
-        <option value={{this.value}}>{{this.name}}</option>
-    {{/each}}
+  <select class="selectopicker btn-info check-out">
+    <option value=0 {{isSelected 0 this.selected}}>Compatible</option>
+    <option value=1 {{isSelected 1 this.selected}}>InCompatible</option>
+    <option value=2 {{isSelected 2 this.selected}}>Re-licence</option>
   </select>
 </template>
