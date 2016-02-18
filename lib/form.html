@@ -1,0 +1,30 @@
+
+<template name="spdxLicense">
+  {{license.name}}
+  {{license.id}}
+  {{license.url}}
+  {{license.osiApproved}}
+</template>
+
+<template name="FormBlock">
+  <fieldset>
+    <legend>License Compatibility Form</legend>
+    <div>
+      {{> spdxLicense license=atts.doc.id1 }}
+      {{> spdxLicense license=atts.doc.id2 }}
+    </div>
+    {{> afFieldInput name='compatibility' type='select' options="allowed"}}
+    {{> afQuickField name='comments' rows=6}}
+  </fieldset>
+  <button type="submit" class="btn btn-primary">Insert/Update</button>
+</template>
+
+<template name="quickForm_MatrixForm">
+  {{#if this }}
+    {{#autoForm collection="LicenseMatrix" id="MatrixForm" doc=atts.doc type="update"}}
+      {{> FormBlock }}
+    {{/autoForm}}
+  {{else}}
+    <h1>You cannot invoke this page without an identifier</h1>
+  {{/if}}
+</template>

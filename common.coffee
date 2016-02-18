@@ -1,38 +1,25 @@
 console.log "common"
-@Books = new Mongo.Collection 'players'
-
-Books.allow {
-  insert: () -> true
-  update: () -> true
-  remove: () -> true
-}
-
 TabularTables = {}
 
 Meteor.isClient and Template.registerHelper('TabularTables', TabularTables)
 
-console.log "publishing"
-
+columns = [ { data: "title" , title : "Title" } ]
 idx = 0
-columns = [ { data: "title" , title : "Title"} ]
-for licence in spdxLicenseIds
+for License in spdxLicenseIds[0..4]
   col = "lid_" + idx++
-  v = do (col,licence) -> {
+  do(License,col) ->
+    columns.push
       searchable: false
-      data : col
-      title : licence
-      tmpl: Meteor.isClient and Template.LicenceSwitch
-      tmplContext: Meteor.isClient and Tracker.nonreactive () -> (rowData) -> {
-        data: rowData
-        col : col
-        selected: rowData[col]
-      }
-    }
-  columns.push v
+      data: col
+      title: License
+      tmpl: Meteor.isClient and Template.LicenseSwitch
+      tmplContext: (rowdata) ->
+        row = rowdata[col]
+        { id: if row then LicenseMatrix.findOne(row._id) else null }
 
-TabularTables.Books = new (Tabular.Table) (
-    name: 'BookList'
-    collection: Books
+TabularTables.LicenseMatrix = new (Tabular.Table) (
+    name: 'Licence List'
+    collection: LicenseMatrixTable
     columns: columns
     scrollY: 400
     scrollX: true
@@ -43,6 +30,3 @@ TabularTables.Books = new (Tabular.Table) (
     # autoWidth: false
     bSort: false
   )
-
-Meteor.isClient and console.log Books.find().count()
-Meteor.isClient and console.log "here " + Books.find().count()
