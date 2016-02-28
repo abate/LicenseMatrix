@@ -3,6 +3,7 @@ console.log "collections"
 @SpdxLicense = new Mongo.Collection 'Spdxlicense'
 @LicenseMatrixTable = new Mongo.Collection "Licensematrixtable"
 @ModerationTable = new Mongo.Collection "Moderationtable"
+@spdxLicenseIds = Object.keys(spdxLicenseDict)
 
 Schemas = {}
 

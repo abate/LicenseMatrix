@@ -5,15 +5,10 @@
   <ul>
     <li>Name {{name}}</li>
     <li>Url: {{url}}</li>
-    <li>osiApproved: {{osiApproved}}</li>
+    <li>osiApproved: {{boolString osiApproved}}</li>
   </ul>
   {{/with}}
 </template>
-
-
-
-
-
 
 <template name="AnalysisBlock">
   <div class="row">
@@ -40,10 +35,10 @@
 
 <template name="quickForm_MatrixForm">
   <legend>License Compatibility Form</legend>
-  {{#unless $exists atts.doc.verifiedBy }}
+  {{#if $exists atts.doc.verifiedBy }}
     <div>Verified by {{verifiedBy}}</div>
     <div>These information are verified and cannot be changed.</div>
-  {{/unless}}
+  {{/if}}
   <div class="row">
     <div class="col-md-5">{{> spdxLicense spdxid=atts.doc.spdxid1 }}</div>
     <div class="col-md-5">{{> spdxLicense spdxid=atts.doc.spdxid2 }}</div>
@@ -51,21 +46,22 @@
   {{#unless $exists atts.doc.analysis }}
     <div>Nobody has submitted information about these licences. Be the first !</div>
     {{#unless currentUser}}Please log in to edit.{{/unless}}
-  {{else}}
-    <div class="row">
-      <div class="col-md-12">
-        {{#autoForm id="MatrixForm" type="update-pushArray" collection="LicenseMatrix" doc=exampleDoc scope="analysis"}}
-          <fieldset>
-            <legend>Licence Analysis</legend>
-                {{> afQuickFields }}
-                  <div><button type="submit" class="btn btn-primary">Submit</button></div>
-          </fieldset>
-        {{/autoForm}}
+  {{/unless}}
+    {{#if currentUser }}
+      <div class="row">
+        <div class="col-md-12">
+          {{#autoForm id="MatrixForm" type="update-pushArray" collection="LicenseMatrix" doc=exampleDoc scope="analysis"}}
+            <fieldset>
+              <legend>Licence Analysis</legend>
+                  {{> afQuickFields }}
+                    <div><button type="submit" class="btn btn-primary">Submit</button></div>
+            </fieldset>
+          {{/autoForm}}
+        </div>
       </div>
-    </div>
+    {{/if}}
     <hr/>
     {{#each atts.doc.analysis }}
       {{> AnalysisBlock }}
     {{/each}}
-  {{/unless}}
 </template>

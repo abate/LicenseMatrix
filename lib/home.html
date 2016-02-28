@@ -12,12 +12,12 @@
     <div class="navbar-header">
       <a class="navbar-brand" href="{{pathFor route='home'}}">Matrix</a>
       {{#if currentUser }}
-      <!-- {{#if isInRole 'editor'}} -->
-      <a class="navbar-brand" href="{{pathFor route='moderation'}}">Moderation Queue</a>
-      <!-- {{/if}} -->
-      {{#if isInRole 'admin'}}
-      <a class="navbar-brand" href="{{pathFor route='admin'}}">Admin</a>
-      {{/if}}
+        <!-- {{#if isInRo le 'editor'}} -->
+          <a class="navbar-brand" href="{{pathFor route='moderation'}}">Moderation Queue</a>
+        <!-- {{/if}} -->
+        {{#if isInRole 'admin'}}
+          <a class="navbar-brand" href="{{pathFor route='admin'}}">Admin</a>
+        {{/if}}
       {{/if}}
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
           <span class="sr-only">Toggle navigation</span>

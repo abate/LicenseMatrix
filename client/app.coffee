@@ -17,10 +17,6 @@ AutoForm.hooks
     onSuccess: (formType, result) ->
       doc = this.currentDoc
       subdoc = this.insertDoc
-      console.log formType
-      console.log doc
-      console.log subdoc
-      console.log this
       d =
         licence1: SpdxLicense.findOne(doc.spdxid1).spdxid
         licence2: SpdxLicense.findOne(doc.spdxid2).spdxid
@@ -29,13 +25,16 @@ AutoForm.hooks
       if m
         ModerationTable.update(m, {"$set": { compatibility : subdoc.compatibility}})
       else
-        d['docid'] = result
+        d['docid'] = doc._id
         d['compatibility'] = subdoc.compatibility
-        d['username'] = Meteor.users.findOne(subdoc.submittedBy).profile.firstName
+        d['submittedBy'] = subdoc.submittedBy
         ModerationTable.insert d
 
 Template.registerHelper "getRealName", (userId) ->
   Meteor.users.findOne(userId).profile.firstName
+
+Template.registerHelper "boolString", (b) ->
+  String(b)
 
 Template.quickForm_MatrixForm.helpers
   "exampleDoc": () ->
