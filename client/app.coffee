@@ -1,6 +1,6 @@
 console.log "on client"
 
-AutoForm.debug()
+# AutoForm.debug()
 
 Template.registerHelper "debug", (optionalValue) ->
     console.log("Current Context")
@@ -35,6 +35,9 @@ Template.registerHelper "getRealName", (userId) ->
 
 Template.registerHelper "boolString", (b) ->
   String(b)
+
+Template.registerHelper "daysAgo", (d) ->
+  "10 days ago"
 
 Template.quickForm_MatrixForm.helpers
   "exampleDoc": () ->
@@ -87,3 +90,17 @@ Template.spdxLicense.helpers
 Template._loginButtonsAdditionalLoggedInDropdownActions.events
   'click #login-buttons-edit-profile': (event) ->
     Router.go 'profile'
+
+Template.quickForm_MatrixForm.events
+  'click #matrix-form-lock': (event) ->
+    console.log this
+    console.log event
+    console.log "LOCK"
+
+
+Template.quickForm_MatrixForm.events
+  'click #matrix-remove-comment': (event) ->
+    console.log event.target.value
+    console.log this
+    console.log event
+    console.log "REMOVE"

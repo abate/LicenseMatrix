@@ -6,8 +6,11 @@
 <template name="LicenseSwitch">
   {{#if doc}}
     <div>
-      {{#if $exists doc.analysis}}
-        <div>Comments<span class="badge">{{getLength doc.analysis}}</span></div>
+      {{#if $exists doc.usercomments}}
+        <span class="badge">{{getLength doc.usercomments}}</span>
+      {{/if}}
+      {{#if doc.verified }}
+        <i class="fa fa-check-square-o" title="Verified by {{doc.verifiedBy}}"></i>
       {{/if}}
       {{#afModal class="fa fa-pencil fa-fw" collection="LicenseMatrix" template="MatrixForm" operation="update" doc=doc._id}}
       {{/afModal}}

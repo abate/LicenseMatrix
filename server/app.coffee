@@ -1,4 +1,3 @@
-#server only code
 console.log "server"
 fs = Npm.require("fs")
 path = Npm.require( 'path' )

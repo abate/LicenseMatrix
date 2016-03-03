@@ -17,51 +17,90 @@
         <img class="img-responsive user-photo" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
       </div>
     </div>
-    <div class="col-sm-10">
+    <div class="col-sm-8">
       <div class="panel panel-default">
         <div class="panel-heading">
-        <strong>{{getRealName submittedBy}}</strong> <span class="text-muted">commented xxx days ago</span>
+          <strong>{{getRealName submittedBy}}</strong>
+          <span class="text-muted">Updated {{daysAgo modifiedAt}}</span>
         </div>
         <div class="panel-body">
           <div>Compatibility: {{compatibility}} </div>
-          <div>Comments:
+          <div>{{tags}}</div>
+          <div>Comment:
             <div>{{comments}}</div>
           </div>
         </div>
       </div>
     </div>
+    <!-- {{#if isInRole 'admin,editor'}}
+      <div class="col-sm-1">
+        <button type="button" class="close" id="matrix-remove-comment" aria-hidden="true" value="{{index}}">
+          <i class="fa fa-times fa-fw" data="{{index}}"></i>
+        </button>
+      </div>
+    {{/if}} -->
   </div>
 </template>
 
-<template name="quickForm_MatrixForm">
-  <legend>License Compatibility Form</legend>
-  {{#if $exists atts.doc.verifiedBy }}
-    <div>Verified by {{verifiedBy}}</div>
-    <div>These information are verified and cannot be changed.</div>
-  {{/if}}
+<template name="MatrixFormHeading">
+  <legend>
+    <div class="row">
+      <div class="col-md-10">
+        License Compatibility Form
+      </div>
+      <div class="col-md-2">
+        {{#if isInRole 'admin,editor'}}
+          {{debug}}
+          {{#if $exists atts.doc.verifiedBy }}
+            <div>Verified by {{verifiedBy}}</div>
+          {{/if}}
+            {{#if atts.doc.verified }}
+              <i class="fa fa-lock"></i>
+            {{else}}
+              <i class="fa fa-unlock"></i>
+            {{/if}}
+        {{/if}}
+      </div>
+    </div>
+  </legend>
   <div class="row">
     <div class="col-md-5">{{> spdxLicense spdxid=atts.doc.spdxid1 }}</div>
     <div class="col-md-5">{{> spdxLicense spdxid=atts.doc.spdxid2 }}</div>
   </div>
-  {{#unless $exists atts.doc.analysis }}
+</template>
+
+<template name="quickForm_MatrixForm">
+  {{> MatrixFormHeading }}
+  {{#unless $exists atts.doc.usercomments }}
     <div>Nobody has submitted information about these licences. Be the first !</div>
     {{#unless currentUser}}Please log in to edit.{{/unless}}
   {{/unless}}
-    {{#if currentUser }}
-      <div class="row">
-        <div class="col-md-12">
-          {{#autoForm id="MatrixForm" type="update-pushArray" collection="LicenseMatrix" doc=exampleDoc scope="analysis"}}
-            <fieldset>
-              <legend>Licence Analysis</legend>
-                  {{> afQuickFields }}
-                    <div><button type="submit" class="btn btn-primary">Submit</button></div>
-            </fieldset>
-          {{/autoForm}}
-        </div>
+  {{#if currentUser }}
+    <div class="row">
+      <div class="col-md-12">
+        {{#autoForm id="MatrixForm" type="update-pushArray" collection="LicenseMatrix" doc=exampleDoc scope="usercomments"}}
+          <fieldset>
+            <legend>New Comment</legend>
+              {{> afQuickFields }}
+              <div><button type="submit" class="btn btn-primary">Submit</button></div>
+          </fieldset>
+        {{/autoForm}}
       </div>
-    {{/if}}
-    <hr/>
-    {{#each atts.doc.analysis }}
-      {{> AnalysisBlock }}
-    {{/each}}
+    </div>
+  {{/if}}
+  <hr/>
+  {{#each atts.doc.usercomments }}
+    {{> AnalysisBlock this index=@index }}
+  {{/each}}
+</template>
+
+<template name="quickForm_MatrixFormModeration">
+  {{> MatrixFormHeading }}
+  <hr/>
+  {{#autoForm id="MatrixFormModeration" class="clearfix" collection="LicenseMatrix" omitFields="spdxid1,spdxid2,verifiedBy" type="update" doc=atts.doc }}
+  <fieldset>
+    {{> afQuickFields }}
+    <div><button type="submit" class="btn btn-primary">Submit</button></div>
+  </fieldset>
+  {{/autoForm}}
 </template>

@@ -27,13 +27,25 @@ SpdxLicense.attachSchema(Schemas.SpdxLicense)
 
 Schemas.LicenseAnalysis = new SimpleSchema(
   compatibility:
-    type: String
-    allowedValues: ["Compatible","InCompatible","ReLicense","Unknown"]
+    type: [String]
+    allowedValues: [
+      "Compatible",
+      "InCompatible",
+      "LeftReLicense",
+      "RightReLicense",
+    ]
     label: "Compatibility"
     autoform:
       afFieldInput:
-        type: "select",
+        type: "select-checkbox-inline",
         options: "allowed"
+    defaultValue: []
+  tags:
+      type: [String],
+      label: 'Tags',
+      autoform:
+        type: 'tagsTypeahead'
+      optional: true
   comments:
     type: String
     label: "Comments"
@@ -55,6 +67,11 @@ Schemas.LicenseAnalysis = new SimpleSchema(
     autoValue: () -> new Date()
     autoform:
       type: "hidden"
+  modifiedAt:
+    type: Date
+    autoValue: () -> new Date()
+    autoform:
+      type: "hidden"
 )
 
 Schemas.LicenseMatrix = new SimpleSchema(
@@ -67,6 +84,9 @@ Schemas.LicenseMatrix = new SimpleSchema(
     autoform:
       readonly: true
   analysis:
+    type: Schemas.LicenseAnalysis
+    optional: true
+  usercomments:
     type: [Schemas.LicenseAnalysis]
     optional: true
   verified:
@@ -75,6 +95,7 @@ Schemas.LicenseMatrix = new SimpleSchema(
   verifiedBy :
     type: String
     optional: true
+    autoValue: () -> this.userId
     autoform:
       readonly: true
 )

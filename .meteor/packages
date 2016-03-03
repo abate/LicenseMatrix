@@ -28,3 +28,4 @@ ongoworks:security
 momentjs:moment
 raix:handlebar-helpers
 dburles:collection-helpers
+cloudspider:autoform-tags-typeahead
