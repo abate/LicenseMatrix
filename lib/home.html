@@ -11,10 +11,9 @@
   <div class="navbar navbar-default" role="navigation">
     <div class="navbar-header">
       <a class="navbar-brand" href="{{pathFor route='home'}}">Matrix</a>
+      <a class="navbar-brand" href="{{pathFor route='licenses'}}">SPDX Licenses</a>
       {{#if currentUser }}
-        <!-- {{#if isInRo le 'editor'}} -->
           <a class="navbar-brand" href="{{pathFor route='moderation'}}">Moderation Queue</a>
-        <!-- {{/if}} -->
         {{#if isInRole 'admin'}}
           <a class="navbar-brand" href="{{pathFor route='admin'}}">Admin</a>
         {{/if}}

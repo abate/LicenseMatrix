@@ -2,6 +2,10 @@ console.log "on client"
 
 # AutoForm.debug()
 
+Comments.ui.config
+  template: 'bootstrap'
+  markdown: true
+
 Template.registerHelper "debug", (optionalValue) ->
     console.log("Current Context")
     console.log("====================")
@@ -17,6 +21,9 @@ AutoForm.hooks
     onSuccess: (formType, result) ->
       doc = this.currentDoc
       subdoc = this.insertDoc
+      console.log doc
+      console.log subdoc
+      console.log this
       d =
         licence1: SpdxLicense.findOne(doc.spdxid1).spdxid
         licence2: SpdxLicense.findOne(doc.spdxid2).spdxid
@@ -30,6 +37,12 @@ AutoForm.hooks
         d['submittedBy'] = subdoc.submittedBy
         ModerationTable.insert d
 
+# Comments._collection.after.insert (userId, comment) ->
+#   console.log userId
+#   console.log comment
+#   console.log this
+#   console.log "Comment added"
+
 Template.registerHelper "getRealName", (userId) ->
   Meteor.users.findOne(userId).profile.firstName
 
@@ -38,6 +51,9 @@ Template.registerHelper "boolString", (b) ->
 
 Template.registerHelper "daysAgo", (d) ->
   "10 days ago"
+
+Template.registerHelper "uniqueID", (t) ->
+  t + this._id
 
 Template.quickForm_MatrixForm.helpers
   "exampleDoc": () ->
@@ -83,24 +99,10 @@ Accounts.ui.config
     }
   ]
 
-Template.spdxLicense.helpers
+Template.spdxLicenseView.helpers
   "getLicenseData": (spdxid) ->
     SpdxLicense.findOne(spdxid)
 
 Template._loginButtonsAdditionalLoggedInDropdownActions.events
   'click #login-buttons-edit-profile': (event) ->
     Router.go 'profile'
-
-Template.quickForm_MatrixForm.events
-  'click #matrix-form-lock': (event) ->
-    console.log this
-    console.log event
-    console.log "LOCK"
-
-
-Template.quickForm_MatrixForm.events
-  'click #matrix-remove-comment': (event) ->
-    console.log event.target.value
-    console.log this
-    console.log event
-    console.log "REMOVE"

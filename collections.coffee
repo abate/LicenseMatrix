@@ -21,7 +21,29 @@ Schemas.SpdxLicense = new SimpleSchema(
     defaultValue: false
   spdxid:
     type: String
-    label: 'The SPDX License ID')
+    label: 'The SPDX License ID'
+  category:
+    type: [String],
+    label: 'Category'
+    allowedValues: [
+      "Copyleft",
+      "Free Software",
+      "GPL Compatible",
+      "Creative Commons"
+    ]
+    autoform:
+      type: 'select-multiple'
+      options: 'allowed'
+    optional: true
+    defaultValue: []
+  tags:
+    type: [String],
+    label: 'Tags',
+    autoform:
+      type: 'tagsTypeahead'
+    optional: true
+    defaultValue: []
+)
 
 SpdxLicense.attachSchema(Schemas.SpdxLicense)
 
@@ -40,39 +62,19 @@ Schemas.LicenseAnalysis = new SimpleSchema(
         type: "select-checkbox-inline",
         options: "allowed"
     defaultValue: []
-  tags:
-      type: [String],
-      label: 'Tags',
-      autoform:
-        type: 'tagsTypeahead'
-      optional: true
-  comments:
-    type: String
-    label: "Comments"
-    optional: true
-    autoform:
-      afFieldInput:
-        type: "textarea",
-        rows: 10
-        class: "form-control input-lg"
-  submittedBy:
-    type: String
-    optional: true
-    autoValue: () -> this.userId
-    autoform:
-      type: "hidden"
-  createdAt:
-    type: Date
-    # denyUpdate: true
-    autoValue: () -> new Date()
-    autoform:
-      type: "hidden"
-  modifiedAt:
-    type: Date
-    autoValue: () -> new Date()
-    autoform:
-      type: "hidden"
 )
+
+Comments.changeSchema (currentSchema) ->
+  currentSchema.analysis =
+    type: Schemas.LicenseAnalysis
+    optional: true
+  currentSchema
+
+# Comments._collection.after.insert (userId, comment) ->
+#   console.log userId
+#   console.log comment
+#   console.log this
+#   console.log "Comment added"
 
 Schemas.LicenseMatrix = new SimpleSchema(
   spdxid1:
@@ -85,9 +87,6 @@ Schemas.LicenseMatrix = new SimpleSchema(
       readonly: true
   analysis:
     type: Schemas.LicenseAnalysis
-    optional: true
-  usercomments:
-    type: [Schemas.LicenseAnalysis]
     optional: true
   verified:
     type: Boolean

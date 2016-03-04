@@ -8,7 +8,7 @@ compatibility information in a structured way.
 
 We use spdx licenses ID and we restrict ourselves only to those licenses.
 
-To test : Installe meteor and run the application
+To test : Install meteor and run the application
 
 admin : admin@example.com / apple1
 user : normal@example.com / apple1

@@ -13,6 +13,11 @@ Router.route '/moderation', {
       this.next();
 }
 
+Router.route '/licenses', {
+  name: 'licenses'
+  template: 'LicensesTable'
+}
+
 Router.route '/admin', {
   name: 'admin'
   template: 'UserTable'

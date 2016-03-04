@@ -18,7 +18,7 @@ for License in spdxLicenseIds[0..5]
         { doc: if row then LicenseMatrix.findOne(row) else null }
 
 TabularTables.LicenseMatrix = new Tabular.Table (
-  name: 'Licence List'
+  name: 'Licence Matrix'
   collection: LicenseMatrixTable
   columns: columns
   scrollY: 400
@@ -26,6 +26,25 @@ TabularTables.LicenseMatrix = new Tabular.Table (
   scrollCollapse: true
   fixedColumns: true
   fixedHeader: true
+  responsive: true
+  autoWidth: false
+  bSort: false
+)
+
+TabularTables.LicensesTable = new Tabular.Table (
+  name: 'Licence List'
+  collection: SpdxLicense
+  extraFields: ['name']
+  columns: [
+    {data: "spdxid", title:"ID"},
+    {data: "url", title: "Name", tmpl: Meteor.isClient and Template.LicenseUrl },
+    {data: "osiApproved", title:"OSI", tmpl: Meteor.isClient and Template.LicenseOSI },
+    {data: "category", title:"Category", tmpl: Meteor.isClient and Template.LicenseCategory },
+    {data: "tags", title:"Tags", tmpl: Meteor.isClient and Template.LicenseTags },
+  ]
+  scrollY: 400
+  scrollX: true
+  scrollCollapse: true
   responsive: true
   autoWidth: false
   bSort: false

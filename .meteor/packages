@@ -29,3 +29,5 @@ momentjs:moment
 raix:handlebar-helpers
 dburles:collection-helpers
 cloudspider:autoform-tags-typeahead
+arkham:comments-ui
+matb33:collection-hooks

@@ -3,7 +3,6 @@ Security.defineMethod 'ifIsOwner',
   fetch: []
   transform: null
   deny: (type, arg, userId, doc) ->
-    doc.submittedBy == undefined and
     userId != doc.submittedBy
 
 Security.defineMethod "ifIsCurrentUser",
@@ -16,7 +15,12 @@ Security.defineMethod "ifIsCurrentUser",
 # verify the information
 LicenseMatrix.permit('update').ifLoggedIn().exceptProps(['verified','verifiedBy']).apply()
 LicenseMatrix.permit('update').ifIsOwner().exceptProps(['verified','verifiedBy']).apply()
-LicenseMatrix.permit('update').ifHasRole(['editor','admin']).apply()
+# LicenseMatrix.permit('update').ifHasRole(['editor','admin']).apply()
+
+# allow users to add tags
+SpdxLicense.permit('update').ifLoggedIn().onlyProps(['tags']).apply()
+# allow editos to add categories
+SpdxLicense.permit('update').ifHasRole(['editor','admin']).onlyProps(['category']).apply()
 
 # all users can add a row in the moderation table, but only editors and
 # admins can remove or update
