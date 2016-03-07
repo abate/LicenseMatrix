@@ -29,5 +29,8 @@ momentjs:moment
 raix:handlebar-helpers
 dburles:collection-helpers
 cloudspider:autoform-tags-typeahead
-arkham:comments-ui
 matb33:collection-hooks
+aldeed:autoform-select2
+zimme:select2-bootstrap3-css
+natestrauser:select2
+arkham:comments-ui

@@ -6,6 +6,11 @@ Comments.ui.config
   template: 'bootstrap'
   markdown: true
 
+Comments.config
+  beforeInsert: (e) ->
+    v = [e.target['analysis.compatibility'].value]
+    { "analysis" : { compatibility: v } }
+
 Template.registerHelper "debug", (optionalValue) ->
     console.log("Current Context")
     console.log("====================")
@@ -36,12 +41,6 @@ AutoForm.hooks
         d['compatibility'] = subdoc.compatibility
         d['submittedBy'] = subdoc.submittedBy
         ModerationTable.insert d
-
-# Comments._collection.after.insert (userId, comment) ->
-#   console.log userId
-#   console.log comment
-#   console.log this
-#   console.log "Comment added"
 
 Template.registerHelper "getRealName", (userId) ->
   Meteor.users.findOne(userId).profile.firstName
@@ -106,3 +105,26 @@ Template.spdxLicenseView.helpers
 Template._loginButtonsAdditionalLoggedInDropdownActions.events
   'click #login-buttons-edit-profile': (event) ->
     Router.go 'profile'
+
+Template.LicenseCategory.onCreated () ->
+  this.isEditing = false
+  this.isEditingDep = new Deps.Dependency()
+
+Template.LicenseCategory.helpers
+  'editing': () ->
+    self = Template.instance()
+    self.isEditingDep.depend()
+    self.isEditing
+
+Template.LicenseCategory.events
+  'click .data-category': (e, t) ->
+    t.isEditing = false
+    t.isEditingDep.changed()
+  'click': (e, t) ->
+    t.isEditing = true;
+    t.isEditingDep.changed()
+
+Template.LicenseComments.helpers
+  CommentsCollection: Comments.getCollection()
+  formclass: (reply) -> if reply then "reply-form" else "comment-form"
+  textareaclass: (reply) -> "form-control " + (if reply then "create-reply" else "create-comment")

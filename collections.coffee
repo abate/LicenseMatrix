@@ -5,7 +5,30 @@ console.log "collections"
 @ModerationTable = new Mongo.Collection "Moderationtable"
 @spdxLicenseIds = Object.keys(spdxLicenseDict)
 
-Schemas = {}
+@Schemas = {}
+
+Schemas.LicenseAnalysis = new SimpleSchema(
+  compatibility:
+    type: [String]
+    allowedValues: [
+      "Compatible",
+      "InCompatible",
+      "LeftReLicense",
+      "RightReLicense",
+    ]
+    label: "Compatibility"
+    autoform:
+      type: "select2"
+      label: false
+      afFieldInput:
+        multiple: true
+        tags: true
+        options: "allowed"
+        selectOnBlur: true
+      afFormGroup:
+        label: false
+    defaultValue: []
+)
 
 Schemas.SpdxLicense = new SimpleSchema(
   name:
@@ -22,6 +45,7 @@ Schemas.SpdxLicense = new SimpleSchema(
   spdxid:
     type: String
     label: 'The SPDX License ID'
+  # XXX category should be of type Schemas.LicenseAnalysis
   category:
     type: [String],
     label: 'Category'
@@ -31,10 +55,12 @@ Schemas.SpdxLicense = new SimpleSchema(
       "GPL Compatible",
       "Creative Commons"
     ]
-    autoform:
-      type: 'select-multiple'
-      options: 'allowed'
-    optional: true
+    # autoform:
+    #   afFieldInput:
+    #     type: "select2"
+    #     multiple: true
+    #     options: "allowed"
+    # optional: true
     defaultValue: []
   tags:
     type: [String],
@@ -47,34 +73,11 @@ Schemas.SpdxLicense = new SimpleSchema(
 
 SpdxLicense.attachSchema(Schemas.SpdxLicense)
 
-Schemas.LicenseAnalysis = new SimpleSchema(
-  compatibility:
-    type: [String]
-    allowedValues: [
-      "Compatible",
-      "InCompatible",
-      "LeftReLicense",
-      "RightReLicense",
-    ]
-    label: "Compatibility"
-    autoform:
-      afFieldInput:
-        type: "select-checkbox-inline",
-        options: "allowed"
-    defaultValue: []
-)
-
 Comments.changeSchema (currentSchema) ->
   currentSchema.analysis =
     type: Schemas.LicenseAnalysis
     optional: true
   currentSchema
-
-# Comments._collection.after.insert (userId, comment) ->
-#   console.log userId
-#   console.log comment
-#   console.log this
-#   console.log "Comment added"
 
 Schemas.LicenseMatrix = new SimpleSchema(
   spdxid1:
