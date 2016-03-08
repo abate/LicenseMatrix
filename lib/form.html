@@ -1,5 +1,4 @@
 
-
 <template name="MatrixFormHeading">
   <legend>
     <div class="row">
@@ -7,15 +6,11 @@
         License Compatibility Form
       </div>
       <div class="col-md-2">
-        {{#if isInRole 'admin,editor'}}
-          {{#if $exists atts.doc.verifiedBy }}
-            <div>Verified by {{verifiedBy}}</div>
-          {{/if}}
-            {{#if atts.doc.verified }}
-              <i class="fa fa-lock"></i>
-            {{else}}
-              <i class="fa fa-unlock"></i>
-            {{/if}}
+        {{#if atts.doc.verified }}
+          <div>Verified by {{getRealName atts.doc.verifiedBy}}</div>
+          <i class="fa fa-lock"></i>
+        {{else}}
+          <i class="fa fa-unlock"></i>
         {{/if}}
       </div>
     </div>
@@ -28,7 +23,25 @@
 
 <template name="quickForm_MatrixForm">
   {{> MatrixFormHeading }}
-  {{#unless $exists atts.doc.comments }}
+  {{#if isInRole 'admin,editor'}}
+    {{#autoForm id="MatrixFormModeration" class="clearfix"
+      collection="LicenseMatrix" omitFields="spdxid1,spdxid2,verifiedBy"
+      type="update" doc=atts.doc }}
+    <fieldset>
+      {{> afQuickFields }}
+      <div><button type="submit" class="btn btn-primary">Submit</button></div>
+    </fieldset>
+    {{/autoForm}}
+  {{else}}
+    <h4>Licence Compatibility Metadata</h4>
+    <ul>
+    {{#each atts.doc.analysis}}
+      <li>{{relation}} - {{compatibility}}</li>
+    {{/each}}
+    </ul>
+  {{/if}}
+
+  {{#unless hascomments atts.doc._id }}
     <div>Nobody has submitted information about these licences. Be the first !</div>
     {{#unless currentUser}}Please log in to edit.{{/unless}}
   {{/unless}}
@@ -40,7 +53,9 @@
 <template name="quickForm_MatrixFormModeration">
   {{> MatrixFormHeading }}
   <hr/>
-  {{#autoForm id="MatrixFormModeration" class="clearfix" collection="LicenseMatrix" omitFields="spdxid1,spdxid2,verifiedBy" type="update" doc=atts.doc }}
+  {{#autoForm id="MatrixFormModeration" class="clearfix"
+    collection="LicenseMatrix" type="update" doc=atts.doc
+    omitFields="spdxid1,spdxid2,verifiedBy" }}
   <fieldset>
     {{> afQuickFields }}
     <div><button type="submit" class="btn btn-primary">Submit</button></div>

@@ -13,9 +13,9 @@ Security.defineMethod "ifIsCurrentUser",
 
 # a user can update a compatibility information, but only editors and admin ca
 # verify the information
-LicenseMatrix.permit('update').ifLoggedIn().exceptProps(['verified','verifiedBy']).apply()
-LicenseMatrix.permit('update').ifIsOwner().exceptProps(['verified','verifiedBy']).apply()
-# LicenseMatrix.permit('update').ifHasRole(['editor','admin']).apply()
+# LicenseMatrix.permit('update').ifLoggedIn().exceptProps(['verified','verifiedBy']).apply()
+# LicenseMatrix.permit('update').ifIsOwner().exceptProps(['verified','verifiedBy']).apply()
+LicenseMatrix.permit('update').ifHasRole(['editor','admin']).onlyProps(['verified','verifiedBy','analysis']).apply()
 
 # allow users to add tags
 SpdxLicense.permit('update').ifLoggedIn().onlyProps(['tags']).apply()
@@ -28,4 +28,4 @@ ModerationTable.permit('insert').ifLoggedIn().apply()
 ModerationTable.permit(['remove','update']).ifHasRole(['editor','admin']).apply()
 
 Security.permit(['remove','update']).collections([ Meteor.users ]).ifHasRole(['admin']).apply();
-Security.permit(['update']).collections([ Meteor.users ]).ifIsCurrentUser().apply();
+Security.permit(['update']).collections([ Meteor.users ]).ifIsCurrentUser().exceptProps(['roles','emails.0']).apply();

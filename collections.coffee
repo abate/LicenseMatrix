@@ -7,9 +7,37 @@ console.log "collections"
 
 @Schemas = {}
 
+SimpleSchema.messages
+  "AnalysisMismatch": "You must specify both the relation and compatibility type"
+  "AnalysisRequired": "You must add at least one compatibility item"
+
 Schemas.LicenseAnalysis = new SimpleSchema(
+  relation:
+    type: [String]
+    optional: false
+    allowedValues: [
+      "DynamicLinking",
+      "StaticLinking",
+      "Documentation",
+      "RemoteAPI",
+      "Compile",
+    ]
+    label: "Relation Type"
+    autoform:
+      type: "select"
+      afFieldInput:
+        options: "allowed"
+        # multiple: true
+        # tags: true
+        # selectOnBlur: true
+      afFormGroup:
+        'formgroup-class': 'col-sm-6'
+    custom: () ->
+      if (!this.isSet || this.value == null || this.value == "")
+        "AnalysisMismatch"
   compatibility:
     type: [String]
+    optional: false
     allowedValues: [
       "Compatible",
       "InCompatible",
@@ -18,16 +46,17 @@ Schemas.LicenseAnalysis = new SimpleSchema(
     ]
     label: "Compatibility"
     autoform:
-      type: "select2"
-      label: false
+      type: "select"
       afFieldInput:
-        multiple: true
-        tags: true
         options: "allowed"
-        selectOnBlur: true
+        # multiple: true
+        # tags: true
+        # selectOnBlur: true
       afFormGroup:
-        label: false
-    defaultValue: []
+        'formgroup-class': 'col-sm-6'
+    custom: () ->
+      if (!this.isSet || this.value == null || this.value == "")
+        "AnalysisMismatch"
 )
 
 Schemas.SpdxLicense = new SimpleSchema(
@@ -45,38 +74,40 @@ Schemas.SpdxLicense = new SimpleSchema(
   spdxid:
     type: String
     label: 'The SPDX License ID'
-  # XXX category should be of type Schemas.LicenseAnalysis
   category:
     type: [String],
     label: 'Category'
+    optional: true
     allowedValues: [
       "Copyleft",
       "Free Software",
       "GPL Compatible",
       "Creative Commons"
     ]
-    # autoform:
-    #   afFieldInput:
-    #     type: "select2"
-    #     multiple: true
-    #     options: "allowed"
-    # optional: true
-    defaultValue: []
+    autoform:
+      type: "select2"
+      afFieldInput:
+        options: "allowed"
+        multiple: true
+        tags: true
+        selectOnBlur: true
   tags:
     type: [String],
     label: 'Tags',
     autoform:
       type: 'tagsTypeahead'
     optional: true
-    defaultValue: []
 )
 
 SpdxLicense.attachSchema(Schemas.SpdxLicense)
 
 Comments.changeSchema (currentSchema) ->
   currentSchema.analysis =
-    type: Schemas.LicenseAnalysis
+    type: [Schemas.LicenseAnalysis]
     optional: true
+    autoform:
+      afObjectField:
+        bodyClass: 'container-fluid row'
   currentSchema
 
 Schemas.LicenseMatrix = new SimpleSchema(
@@ -89,17 +120,22 @@ Schemas.LicenseMatrix = new SimpleSchema(
     autoform:
       readonly: true
   analysis:
-    type: Schemas.LicenseAnalysis
+    type: [Schemas.LicenseAnalysis]
     optional: true
+    autoform:
+      afObjectField:
+        bodyClass: 'container-fluid row'
   verified:
     type: Boolean
     defaultValue: false
+    custom: () ->
+      if not this.field('analysis').isSet
+        "AnalysisRequired"
   verifiedBy :
     type: String
     optional: true
-    autoValue: () -> this.userId
-    autoform:
-      readonly: true
+    autoValue: () ->
+      this.userId
 )
 
 LicenseMatrix.attachSchema(Schemas.LicenseMatrix)

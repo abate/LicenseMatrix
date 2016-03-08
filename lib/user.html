@@ -13,16 +13,22 @@
 
 <template name="_loginButtonsAdditionalLoggedInDropdownActions">
   <button class="btn btn-default btn-block" id="login-buttons-edit-profile">Edit profile</button>
+  {{#if isInRole 'admin'}}
+    <button class="btn btn-default btn-block" id="login-buttons-admin">Admin</button>
+  {{/if}}
+  {{#if isInRole 'editor,admin'}}
+    <button class="btn btn-default btn-block" id="login-buttons-moderation">Moderation</button>
+  {{/if}}
 </template>
 
 <template name="UserForm" >
-  {{#autoForm collection="Meteor.users" id="UserForm" doc=doc type="update"}}
+  {{#autoForm collection="Meteor.users" id="UserForm" doc=user type="update"}}
     <fieldset>
         <legend>Madatory Information</legend>
         <!-- {{> afQuickField name="username"}} -->
         <!-- {{> afQuickField name="password"}}
         {{> afQuickField name="confirmation"}} -->
-        {{> afQuickField name="emails.0.address"}}
+        {{> afQuickField name="emails.0.address" disabled=true}}
         <!-- {{> afQuickField name='emails.0.verified'}} -->
     </fieldset>
     <fieldset>
@@ -32,16 +38,18 @@
         {{> afQuickField name="profile.organization"}}
         {{> afQuickField name="profile.website"}}
         {{> afQuickField name="profile.bio"}}
-        {{> afQuickField name="roles"}}
+        {{#if isInRole 'admin'}}
+          {{> afQuickField name="roles" }}
+        {{/if}}
     </fieldset>
     <button type="submit" class="btn btn-primary">Update</button>
   {{/autoForm}}
 </template>
 
 <template name="quickForm_UserForm">
-  {{> UserForm doc=atts.doc }}
+  {{> UserForm user=atts.doc }}
 </template>
 
 <template name="UserProfile">
-  {{> UserForm doc=this }}
+  {{> UserForm user=this}}
 </template>

@@ -36,17 +36,14 @@ TabularTables.LicensesTable = new Tabular.Table (
   collection: SpdxLicense
   extraFields: ['name']
   columns: [
-    {data: "spdxid", title:"ID"},
+    {data: "spdxid", title:"SPDX-ID"},
     {data: "url", title: "Name", tmpl: Meteor.isClient and Template.LicenseUrl },
     {data: "osiApproved", title:"OSI", tmpl: Meteor.isClient and Template.LicenseOSI },
     {data: "category", title:"Category", tmpl: Meteor.isClient and Template.LicenseCategory },
     {data: "tags", title:"Tags", tmpl: Meteor.isClient and Template.LicenseTags },
   ]
-  scrollY: 400
-  scrollX: true
-  scrollCollapse: true
   responsive: true
-  autoWidth: false
+  # autoWidth: false
   bSort: false
 )
 

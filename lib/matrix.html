@@ -6,8 +6,8 @@
 <template name="LicenseSwitch">
   {{#if doc}}
     <div>
-      {{#if $exists doc.usercomments}}
-        <span class="badge">{{getLength doc.usercomments}}</span>
+      {{#if hascomments doc._id}}
+        <span class="badge">{{countcomments doc._id}}</span>
       {{/if}}
       {{#if doc.verified }}
         <i class="fa fa-check-square-o" title="Verified by {{doc.verifiedBy}}"></i>

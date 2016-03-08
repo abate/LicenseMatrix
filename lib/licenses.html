@@ -1,0 +1,93 @@
+<template name="LicensesTable">
+  {{> tabular table=TabularTables.LicensesTable class="table table-striped table-bordered table-condensed"}}
+</template>
+
+<template name="spdxLicenseView">
+  {{#with getLicenseData spdxid }}
+  <strong>{{spdxid}}</strong>
+  <ul>
+    <li>Name: {{> LicenseUrl}}</li>
+    <li>osiApproved: {{> LicenseOSI}}</li>
+    {{#if tags}}<li>User Tags: {{tags}}</li>{{/if}}
+    {{#if category}}<li>Categories: {{category}} </li>{{/if}}
+  </ul>
+  {{/with}}
+</template>
+
+<template name="LicenseUrl">
+  <a href="{{url}}">{{name}}</a>
+</template>
+
+<template name="LicenseOSI">
+  {{#if osiApproved}}
+    <i class="fa fa-check-square-o"></i>
+  {{else}}
+    No
+  {{/if}}
+</template>
+
+<template name="LicenseTags">
+  {{#if currentUser }}
+    {{#if editing }}
+      {{#autoForm id=(uniqueID "tags") type="update" collection="SpdxLicense" doc=this autosaveOnKeyup=true}}
+        {{> afQuickField name="tags" label=false}}
+      {{/autoForm}}
+    {{else}}
+      <div class="data-category">{{#if tags}}{{tags}}{{else}}&nbsp;{{/if}}</div>
+    {{/if}}
+  {{else}}
+    {{tags}}
+  {{/if}}
+</template>
+
+<template name="LicenseCategory">
+  {{#if isInRole 'admin,editor'}}
+    {{#if editing }}
+      {{#autoForm id=(uniqueID "category") type="update" collection="SpdxLicense" doc=this autosaveOnKeyup=true}}
+         {{> afQuickField name="category" label=false }}
+      {{/autoForm}}
+    {{else}}
+      <div class="data-category">{{#if category}}{{category}}{{else}}&nbsp;{{/if}}</div>
+    {{/if}}
+  {{else}}
+    {{category}}
+  {{/if}}
+</template>
+
+<template name="LicenseCommentsSingle">
+  {{#if analysis}}<div>Compatibility: {{analysis.compatibility}}</div>{{/if}}
+</template>
+
+<template name="LicenseComments">
+  <h3>{{commentsBoxTitle}}</h3>
+
+  {{#if sessionGet 'loginAction'}}
+    <div class="alert alert-warning" role="alert">You need to login to {{sessionGet 'loginAction'}}</div>
+  {{/if}}
+
+  {{#if currentUser }}
+    {{#autoForm collection=CommentsCollection id=id role="form" class=(formclass reply)}}
+      <div class="form-group">
+        {{> afFieldInput name="content" type="textarea"
+            label="Comment"
+            placeholder=(take key='placeholder-textarea' default='Join the discussion')
+            class=(textareaclass reply) rows=3 }}
+        {{> afQuickField name="analysis" }}
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    {{/autoForm}}
+  {{/if}}
+
+  <div class="media-list comments">
+    {{#each comment}}
+      {{#if analysis}}<div>Compatibility: {{analysis.compatibility}}</div>{{/if}}
+      {{> commentsSingleComment }}
+    {{/each}}
+  </div>
+
+  {{#if hasMoreComments}}
+    <button type="button" class="btn btn-success btn-lg btn-block loadmore-action">
+      {{ take key='load-more' default='Load more comments' }}
+    </button>
+  {{/if}}
+</template>
