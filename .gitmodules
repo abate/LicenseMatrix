@@ -1,0 +1,3 @@
+[submodule "packages/meteor-comments-ui"]
+	path = packages/meteor-comments-ui
+	url = git@github.com:abate/meteor-comments-ui.git
