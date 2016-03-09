@@ -1,7 +1,6 @@
 console.log "collections"
 @LicenseMatrix = new Mongo.Collection 'Licensematrix'
 @SpdxLicense = new Mongo.Collection 'Spdxlicense'
-@LicenseMatrixTable = new Mongo.Collection "Licensematrixtable"
 @ModerationTable = new Mongo.Collection "Moderationtable"
 @spdxLicenseIds = Object.keys(spdxLicenseDict)
 
@@ -14,7 +13,6 @@ SimpleSchema.messages
 Schemas.LicenseAnalysis = new SimpleSchema(
   relation:
     type: [String]
-    optional: false
     allowedValues: [
       "DynamicLinking",
       "StaticLinking",
@@ -37,7 +35,6 @@ Schemas.LicenseAnalysis = new SimpleSchema(
         "AnalysisMismatch"
   compatibility:
     type: [String]
-    optional: false
     allowedValues: [
       "Compatible",
       "InCompatible",
@@ -59,6 +56,13 @@ Schemas.LicenseAnalysis = new SimpleSchema(
         "AnalysisMismatch"
 )
 
+LicenseCategory = [
+  "Copyleft",
+  "Free Software",
+  "GPL Compatible",
+  "Creative Commons"
+]
+
 Schemas.SpdxLicense = new SimpleSchema(
   name:
     type: String
@@ -75,15 +79,10 @@ Schemas.SpdxLicense = new SimpleSchema(
     type: String
     label: 'The SPDX License ID'
   category:
-    type: [String],
+    type: [String]
     label: 'Category'
     optional: true
-    allowedValues: [
-      "Copyleft",
-      "Free Software",
-      "GPL Compatible",
-      "Creative Commons"
-    ]
+    allowedValues: LicenseCategory
     autoform:
       type: "select2"
       afFieldInput:
@@ -101,6 +100,40 @@ Schemas.SpdxLicense = new SimpleSchema(
 
 SpdxLicense.attachSchema(Schemas.SpdxLicense)
 
+licenseSearchOptions = () ->
+  a = SpdxLicense.find().map (l) -> {label: l.spdxid, value: "spdx:" + l._id }
+  b = CloudspiderTags.find().map (t) -> {label: "tag:" + t.name, value: "tag:" + t.name}
+  c = LicenseCategory.map (t) -> {label: "cat:" + t, value: "cat:" + t}
+  d = ["true","false"].map (t) -> {label: "osi:" + t , value:"osi:" + t}
+  [a...,b...,c...,d...]
+
+Schemas.SpdxLicenseSearch = new SimpleSchema(
+  field1:
+    type: [String]
+    label: 'Rows'
+    autoform:
+      type: "select2"
+      options: licenseSearchOptions
+      afFieldInput:
+        multiple: true
+        tags: true
+        selectOnBlur: true
+      afFormGroup:
+        'formgroup-class': 'col-sm-5'
+  field2:
+    type: [String]
+    label: 'Columns'
+    autoform:
+      type: "select2"
+      options: licenseSearchOptions
+      afFieldInput:
+        multiple: true
+        tags: true
+        selectOnBlur: true
+      afFormGroup:
+        'formgroup-class': 'col-sm-5'
+)
+
 Comments.changeSchema (currentSchema) ->
   currentSchema.analysis =
     type: [Schemas.LicenseAnalysis]
@@ -115,10 +148,12 @@ Schemas.LicenseMatrix = new SimpleSchema(
     type: String
     autoform:
       readonly: true
+    denyUpdate: true
   spdxid2:
     type: String
     autoform:
       readonly: true
+    denyUpdate: true
   analysis:
     type: [Schemas.LicenseAnalysis]
     optional: true
@@ -128,9 +163,9 @@ Schemas.LicenseMatrix = new SimpleSchema(
   verified:
     type: Boolean
     defaultValue: false
-    custom: () ->
-      if not this.field('analysis').isSet
-        "AnalysisRequired"
+    # custom: () ->
+    #   if not this.field('analysis').isSet
+    #     "AnalysisRequired"
   verifiedBy :
     type: String
     optional: true
@@ -209,11 +244,18 @@ Schemas.User = new SimpleSchema(
 
 Meteor.users.attachSchema Schemas.User
 
-Meteor.isServer and Meteor.publish "Licensematrix", () -> LicenseMatrix.find()
-Meteor.isServer and Meteor.publish "Spdxlicense", () -> SpdxLicense.find()
+@orderIDX = (i,j) ->
+  if i.spdxid >= j.spdxid then [i._id,j._id] else [j._id,i._id]
 
-Meteor.isClient and Meteor.subscribe "Licensematrix"
+Meteor.isServer and Meteor.publish "Licensematrix", () ->
+  # [x,y] = orderIDX(i,j)
+  LicenseMatrix.find()
+  # {spdxid1:x,spdxid2:y})
+# Meteor.isClient and Meteor.subscribe "Licensematrix"
+
+Meteor.isServer and Meteor.publish "Spdxlicense", () -> SpdxLicense.find()
 Meteor.isClient and Meteor.subscribe "Spdxlicense"
+
 
 Meteor.isServer and Meteor.publish "UserDirectory", () ->
   Meteor.users.find {}, {fields: {emails: 1, profile: 1}}

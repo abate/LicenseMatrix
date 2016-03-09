@@ -10,9 +10,18 @@
 <template name="navbar">
   <div class="navbar navbar-default" role="navigation">
     <div class="navbar-header">
-      <a class="navbar-brand" href="{{pathFor route='home'}}">Matrix</a>
-      <a class="navbar-brand" href="{{pathFor route='licenses'}}">SPDX Licenses</a>
-      <a class="navbar-brand" href="{{pathFor route='download'}}">Download</a>
+      <a class="navbar-brand" href="{{pathFor route='home'}}" title="Home">
+        <i class="fa fa-home"> Home</i>
+      </a>
+      <!-- <a class="navbar-brand" href="{{pathFor route='search'}}" title="Search">
+        <i class="fa fa-search"> Search</i>
+      </a> -->
+      <a class="navbar-brand" href="{{pathFor route='licenses'}}" title="SPDX Licenses">
+        <i class="fa fa-list"> Licenses</i>
+      </a>
+      <a class="navbar-brand" href="{{pathFor route='download'}}" title="Download">
+        <i class="fa fa-download"> Download</i>
+      </a>
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
           <span class="sr-only">Toggle navigation</span>
           <span class="icon-bar"></span>

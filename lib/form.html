@@ -24,7 +24,7 @@
 <template name="quickForm_MatrixForm">
   {{> MatrixFormHeading }}
   {{#if isInRole 'admin,editor'}}
-    {{#autoForm id="MatrixFormModeration" class="clearfix"
+    {{#autoForm id="MatrixForm" class="clearfix"
       collection="LicenseMatrix" omitFields="spdxid1,spdxid2,verifiedBy"
       type="update" doc=atts.doc }}
     <fieldset>

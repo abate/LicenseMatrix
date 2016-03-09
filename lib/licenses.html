@@ -1,5 +1,7 @@
+
 <template name="LicensesTable">
-  {{> tabular table=TabularTables.LicensesTable class="table table-striped table-bordered table-condensed"}}
+  {{> reactiveTable class="table table-bordered table-hover"
+      settings=LicensesTableSettings }}
 </template>
 
 <template name="spdxLicenseView">

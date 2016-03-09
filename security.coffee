@@ -13,7 +13,7 @@ Security.defineMethod "ifIsCurrentUser",
 
 # a user can update a compatibility information, but only editors and admin ca
 # verify the information
-# LicenseMatrix.permit('update').ifLoggedIn().exceptProps(['verified','verifiedBy']).apply()
+LicenseMatrix.permit('insert').ifLoggedIn().apply() #exceptProps(['verified','verifiedBy']).apply()
 # LicenseMatrix.permit('update').ifIsOwner().exceptProps(['verified','verifiedBy']).apply()
 LicenseMatrix.permit('update').ifHasRole(['editor','admin']).onlyProps(['verified','verifiedBy','analysis']).apply()
 

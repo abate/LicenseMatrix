@@ -1,6 +1,6 @@
 Router.route '/', {
   name: 'home'
-  template: 'matrix'
+  template: 'SelectLicense'
 }
 
 Router.route '/moderation', {

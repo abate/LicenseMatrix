@@ -1,0 +1,51 @@
+
+<template name="SelectLicenseName">
+  <b>{{rowid}}</b>
+</template>
+
+<template name="SelectLicenseCell">
+  {{#with getCell}}
+    {{#if _id}}
+      <div>
+        {{#if hascomments _id}}
+          <span class="badge">{{countcomments _id}}</span>
+        {{/if}}
+        {{#if verified}}
+          <i class="fa fa-check-square-o" title="Verified by {{verifiedBy}}"></i>
+        {{/if}}
+        {{#afModal class="fa fa-pencil fa-fw" collection="LicenseMatrix"
+                   template="MatrixForm" operation="update" doc=_id}}
+        {{/afModal}}
+      </div>
+    {{else}}
+      {{#afModal class="fa fa-file-text fa-fw" collection="LicenseMatrix"
+                 template="MatrixForm" operation="insert" doc=_id}}
+      {{/afModal}}
+    {{/if}}
+  {{/with}}
+</template>
+
+<template name="SelectLicense">
+  <p>
+    Select two or more licenses either by spdx id, categories (cat:) or user tags (tag:).
+  </p>
+  {{#autoForm schema=selectLicenseSchema id="LicenseSearchForm" type="normal"
+    resetOnSuccess=true tableSettings=tableSettings }}
+    <div class="container-fluid row">
+      {{> afQuickFields }}
+      <div class="col-sm-1">
+        <button type="submit" class="btn btn-primary">
+          <i class="fa fa-search"></i>
+        </button>
+      </div>
+      <div class="col-sm-1">
+        <button type="reset" class="btn btn-default" id="reset-select">
+          <i class="fa fa-refresh"></i>
+        </button>
+      </div>
+    </div>
+  {{/autoForm}}
+  {{> reactiveTable class="table table-bordered table-hover"
+      settings=(getSettings tableSettings) showFilter=false
+      showNavigation='never' }}
+</template>
