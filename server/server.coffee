@@ -7,14 +7,43 @@ Meteor.startup ->
 
   if SpdxLicense.find().count() == 0
     console.log "Initialization SpdxLicense"
-# XXX: load additional categories and tags + merge
+    console.log 'Importing private/*.json'
+    LicensesMetadata = JSON.parse(Assets.getText('choosealicense.json'))
+    SpdxAnnotations = JSON.parse(Assets.getText('spdx-annotation.json'))
+    spdxLicenseDict = JSON.parse(Assets.getText('spdx.json'))
+
     for c,l of spdxLicenseDict
-      SpdxLicense.insert({
+      e = {
         name : l.name
         url: l.url
         osiApproved: l.osiApproved
         spdxid : c
-      })
+      }
+      if LicensesMetadata[c]
+        if LicensesMetadata[c].limitations
+          e.limitations = LicensesMetadata[c].limitations
+        if LicensesMetadata[c].conditions
+          e.conditions = LicensesMetadata[c].conditions
+        if LicensesMetadata[c].permissions
+          e.permissions = LicensesMetadata[c].permissions
+      SpdxLicense.insert(e)
+    for e in SpdxAnnotations
+      SpdxLicense.update({spdxid: e.spdxid},
+        {$set:
+          {tags: e.tags,
+          category: e.category,
+          limitations: e.limitations,
+          conditions: e.conditions,
+          permissions: e.permissions}
+        })
+
+  if LicenseMatrix.find().count() == 0
+    console.log "Initialization LicenseMatrix"
+    console.log 'Importing private/*.json'
+    MatrixData = JSON.parse(Assets.getText('spdx-matrix.json'))
+    for e in MatrixData
+      if e.verified
+        LicenseMatrix.insert(e)
 
   if Meteor.users.find().fetch().length == 0
     console.log 'Creating users: '
@@ -32,6 +61,7 @@ Meteor.startup ->
         roles: userData.roles
       )
       Roles.addUsersToRoles newuser, userData.roles
+
   console.log "startup done"
 
 Accounts.onCreateUser (options, user) ->

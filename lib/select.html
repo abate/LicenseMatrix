@@ -18,9 +18,9 @@
         {{/afModal}}
       </div>
     {{else}}
-      {{#afModal class="fa fa-file-text fa-fw" collection="LicenseMatrix"
+      <!-- {{#afModal class="fa fa-file-text fa-fw" collection="LicenseMatrix"
                  template="MatrixForm" operation="insert" doc=_id}}
-      {{/afModal}}
+      {{/afModal}} -->
     {{/if}}
   {{/with}}
 </template>
@@ -32,17 +32,19 @@
   {{#autoForm schema=selectLicenseSchema id="LicenseSearchForm" type="normal"
     resetOnSuccess=true tableSettings=tableSettings }}
     <div class="container-fluid row">
-      {{> afQuickFields }}
-      <div class="col-sm-1">
-        <button type="submit" class="btn btn-primary">
-          <i class="fa fa-search"></i>
-        </button>
+      {{> afQuickField name="commonOptions"}}
+      <a id="AdvancedSearch">More Options</a>
+    </div>
+    {{#if AdvancedSearch}}
+      <div class="container-fluid row">
+        {{> afQuickField name="field1"}}
+        {{> afQuickField name="field2"}}
       </div>
-      <div class="col-sm-1">
-        <button type="reset" class="btn btn-default" id="reset-select">
-          <i class="fa fa-refresh"></i>
-        </button>
-      </div>
+    {{/if}}
+    <div>
+      <button type="submit" class="btn btn-primary">
+        <i class="fa fa-search"></i>
+      </button>
     </div>
   {{/autoForm}}
   {{> reactiveTable class="table table-bordered table-hover"

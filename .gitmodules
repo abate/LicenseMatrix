@@ -1,3 +1,6 @@
 [submodule "packages/meteor-comments-ui"]
 	path = packages/meteor-comments-ui
 	url = git@github.com:abate/meteor-comments-ui.git
+[submodule ".private/choosealicense.com"]
+	path = .private/choosealicense.com
+	url = https://github.com/github/choosealicense.com.git

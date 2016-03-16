@@ -27,7 +27,15 @@ Router.route '/download/spdx',
   where: 'server'
   name: 'download-spdx'
   action: () ->
-    data = JSON.stringify(SpdxLicense.find().fetch())
+    # only if tags, category, limitation, permission, conditions exists.
+    data = JSON.stringify(SpdxLicense.find(
+      {$or: [
+        {tags: {$exists: true, $ne: []}},
+        {category: {$exists: true, $ne: []}},
+        {permission: {$exists: true, $ne: []}},
+        {conditions: {$exists: true, $ne: []}},
+        {limitation: {$exists: true, $ne: []}},
+      ]}).fetch())
     filename = 'spdx-annotation.json'
     @response.setHeader("Content-Type", "application/json")
     @response.setHeader("Content-Disposition", 'attachment; filename=' + filename)

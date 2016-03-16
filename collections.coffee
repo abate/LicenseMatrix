@@ -2,7 +2,7 @@ console.log "collections"
 @LicenseMatrix = new Mongo.Collection 'Licensematrix'
 @SpdxLicense = new Mongo.Collection 'Spdxlicense'
 @ModerationTable = new Mongo.Collection "Moderationtable"
-@spdxLicenseIds = Object.keys(spdxLicenseDict)
+# @spdxLicenseIds = Object.keys(spdxLicenseDict)
 
 @Schemas = {}
 
@@ -13,55 +13,34 @@ SimpleSchema.messages
 Schemas.LicenseAnalysis = new SimpleSchema(
   relation:
     type: [String]
-    allowedValues: [
-      "DynamicLinking",
-      "StaticLinking",
-      "Documentation",
-      "RemoteAPI",
-      "Compile",
-    ]
+    allowedValues: LicenseReleation.map (e) -> e.value
     label: "Relation Type"
     autoform:
       type: "select"
       afFieldInput:
-        options: "allowed"
-        # multiple: true
-        # tags: true
-        # selectOnBlur: true
+        options: LicenseReleation
       afFormGroup:
         'formgroup-class': 'col-sm-6'
-    custom: () ->
-      if (!this.isSet || this.value == null || this.value == "")
-        "AnalysisMismatch"
+    # custom: () ->
+    #   if (!this.isSet || this.value == null || this.value == "")
+    #     "AnalysisMismatch"
   compatibility:
     type: [String]
-    allowedValues: [
-      "Compatible",
-      "InCompatible",
-      "LeftReLicense",
-      "RightReLicense",
-    ]
+    allowedValues: LicenseCompatibility.map (e) -> e.value
     label: "Compatibility"
     autoform:
       type: "select"
       afFieldInput:
-        options: "allowed"
-        # multiple: true
-        # tags: true
-        # selectOnBlur: true
+        options: (e) ->
+          console.log e
+          console.log Template.instance()
+          LicenseCompatibility
       afFormGroup:
         'formgroup-class': 'col-sm-6'
-    custom: () ->
-      if (!this.isSet || this.value == null || this.value == "")
-        "AnalysisMismatch"
+    # custom: () ->
+    #   if (!this.isSet || this.value == null || this.value == "")
+    #     "AnalysisMismatch"
 )
-
-LicenseCategory = [
-  "Copyleft",
-  "Free Software",
-  "GPL Compatible",
-  "Creative Commons"
-]
 
 Schemas.SpdxLicense = new SimpleSchema(
   name:
@@ -82,11 +61,47 @@ Schemas.SpdxLicense = new SimpleSchema(
     type: [String]
     label: 'Category'
     optional: true
-    allowedValues: LicenseCategory
+    allowedValues: LicenseCategory.map (e) -> e.value
     autoform:
       type: "select2"
       afFieldInput:
-        options: "allowed"
+        options: LicenseCategory
+        multiple: true
+        tags: true
+        selectOnBlur: true
+  conditions:
+    type: [String]
+    label: 'Conditions'
+    optional: true
+    allowedValues: LicenseCharacteristic["conditions"].map (e) -> e.tag
+    autoform:
+      type: "select2"
+      afFieldInput:
+        options: LicenseCharacteristic["conditions"].map (e) -> { label: e.label, value: e.tag }
+        multiple: true
+        tags: true
+        selectOnBlur: true
+  limitation:
+    type: [String]
+    label: 'Limitations'
+    optional: true
+    allowedValues: LicenseCharacteristic["limitations"].map (e) -> e.tag
+    autoform:
+      type: "select2"
+      afFieldInput:
+        options: LicenseCharacteristic["limitations"].map (e) -> { label: e.label, value: e.tag }
+        multiple: true
+        tags: true
+        selectOnBlur: true
+  permission:
+    type: [String]
+    label: 'Permissions'
+    optional: true
+    allowedValues: LicenseCharacteristic["permissions"].map (e) -> e.tag
+    autoform:
+      type: "select2"
+      afFieldInput:
+        options: LicenseCharacteristic["permissions"].map (e) -> { label: e.label, value: e.tag }
         multiple: true
         tags: true
         selectOnBlur: true
@@ -103,16 +118,50 @@ SpdxLicense.attachSchema(Schemas.SpdxLicense)
 licenseSearchOptions = () ->
   a = SpdxLicense.find().map (l) -> {label: l.spdxid, value: "spdx:" + l._id }
   b = CloudspiderTags.find().map (t) -> {label: "tag:" + t.name, value: "tag:" + t.name}
-  c = LicenseCategory.map (t) -> {label: "cat:" + t, value: "cat:" + t}
+  c = LicenseCategory.map (t) -> {label: "cat:" + t.label, value: "cat:" + t.value}
+  l = LicenseCharacteristic['limitations'].map (t) -> {label: "lim:" + t.tag, value: "lim:" + t.tag}
+  p = LicenseCharacteristic['permissions'].map (t) -> {label: "perm:" + t.tag, value: "perm:" + t.tag}
+  co = LicenseCharacteristic['conditions'].map (t) -> {label: "cond:" + t.tag, value: "cond:" + t.tag}
   d = ["true","false"].map (t) -> {label: "osi:" + t , value:"osi:" + t}
-  [a...,b...,c...,d...]
+  [a...,b...,c...,d...,l...,co...,p...,]
+
+commonSearchOptionsSelect = () -> [
+  {label: "GPL vs GPL", value: "GPLvsGPL"  },
+  {label: "Osi vs Osi", value: "OSIvsOSI" },
+  {label: "Cecile vs GPL", value: "CECILEvsGPL"}
+]
+
+@commonSearchOptions = []
+commonSearchOptions["GPLvsGPL"] = {field1: ["tag:gpl"], field2: ["tag:gpl"]}
+commonSearchOptions["OSIvsOSI"] = {field1: ["osi:true"], field2: ["osi:true"]}
+commonSearchOptions["CECILEvsGPL"] = {field1: ["tag:cecill"], field2: ["tag:gpl"]}
 
 Schemas.SpdxLicenseSearch = new SimpleSchema(
+  commonOptions:
+    type: [String]
+    label: "Common Licenses Matrix"
+    optional: true
+    # custom: () ->
+    #   shouldBeRequired = this.field('field1').value == [] && this.field('field2').value == []
+    #   if shouldBeRequired
+    #     if (!this.isSet || this.value === null || this.value === "")
+    #       "required"
+    autoform:
+      type: "select"
+      options: commonSearchOptionsSelect
+      afFormGroup:
+        'formgroup-class': 'col-sm-12'
   field1:
     type: [String]
     label: 'Rows'
+    optional: true
+    # custom: () ->
+    #   shouldBeRequired = this.field('commonOptions').value == [] || this.field('field2').value == []
+    #   if shouldBeRequired
+    #     if (!this.isSet || this.value === null || this.value === "")
+    #       "required"
     autoform:
-      type: "select2"
+      type: "selectize"
       options: licenseSearchOptions
       afFieldInput:
         multiple: true
@@ -123,8 +172,14 @@ Schemas.SpdxLicenseSearch = new SimpleSchema(
   field2:
     type: [String]
     label: 'Columns'
+    optional: true
+    # custom: () ->
+    #   shouldBeRequired = this.field('commonOptions').value == [] || this.field('field1').value == []
+    #   if shouldBeRequired
+    #     if (!this.isSet || this.value === null || this.value === "")
+    #       "required"
     autoform:
-      type: "select2"
+      type: "selectize"
       options: licenseSearchOptions
       afFieldInput:
         multiple: true

@@ -1,0 +1,420 @@
+{
+    "OSL-3.0": {
+        "limitations": [
+            "trademark-use",
+            "no-liability"
+        ],
+        "conditions": [
+            "include-copyright",
+            "disclose-source",
+            "same-license"
+        ],
+        "permissions": [
+            "commercial-use",
+            "distribution",
+            "modifications",
+            "patent-use",
+            "private-use"
+        ]
+    },
+    "BSD-3-CLAUSE-CLEAR": {
+        "limitations": [
+            "no-liability",
+            "patent-use"
+        ],
+        "conditions": [
+            "include-copyright"
+        ],
+        "permissions": [
+            "commercial-use",
+            "modifications",
+            "distribution",
+            "private-use"
+        ]
+    },
+    "MPL-2.0": {
+        "limitations": [
+            "no-liability",
+            "trademark-use"
+        ],
+        "conditions": [
+            "disclose-source",
+            "include-copyright",
+            "same-license"
+        ],
+        "permissions": [
+            "commercial-use",
+            "modifications",
+            "distribution",
+            "patent-use",
+            "private-use"
+        ]
+    },
+    "CC0-1.0": {
+        "limitations": [
+            "no-liability",
+            "trademark-use",
+            "patent-use"
+        ],
+        "conditions": [],
+        "permissions": [
+            "commercial-use",
+            "modifications",
+            "distribution",
+            "private-use"
+        ]
+    },
+    "GPL-3.0": {
+        "limitations": [
+            "no-liability"
+        ],
+        "conditions": [
+            "include-copyright",
+            "document-changes",
+            "disclose-source",
+            "same-license"
+        ],
+        "permissions": [
+            "commercial-use",
+            "modifications",
+            "distribution",
+            "patent-use",
+            "private-use"
+        ]
+    },
+    "AGPL-3.0": {
+        "limitations": [
+            "no-liability"
+        ],
+        "conditions": [
+            "include-copyright",
+            "document-changes",
+            "disclose-source",
+            "network-use-disclose",
+            "same-license"
+        ],
+        "permissions": [
+            "commercial-use",
+            "modifications",
+            "distribution",
+            "patent-use",
+            "private-use"
+        ]
+    },
+    "ISC": {
+        "limitations": [
+            "no-liability"
+        ],
+        "conditions": [
+            "include-copyright"
+        ],
+        "permissions": [
+            "commercial-use",
+            "distribution",
+            "modifications",
+            "private-use"
+        ]
+    },
+    "BSD-3-CLAUSE": {
+        "limitations": [
+            "no-liability"
+        ],
+        "conditions": [
+            "include-copyright"
+        ],
+        "permissions": [
+            "commercial-use",
+            "modifications",
+            "distribution",
+            "private-use"
+        ]
+    },
+    "BSD-2-CLAUSE": {
+        "limitations": [
+            "no-liability"
+        ],
+        "conditions": [
+            "include-copyright"
+        ],
+        "permissions": [
+            "commercial-use",
+            "modifications",
+            "distribution",
+            "private-use"
+        ]
+    },
+    "MIT": {
+        "limitations": [
+            "no-liability"
+        ],
+        "conditions": [
+            "include-copyright"
+        ],
+        "permissions": [
+            "commercial-use",
+            "modifications",
+            "distribution",
+            "private-use"
+        ]
+    },
+    "WTFPL": {
+        "limitations": [],
+        "conditions": [],
+        "permissions": [
+            "commercial-use",
+            "modifications",
+            "distribution",
+            "private-use"
+        ]
+    },
+    "GPL-2.0": {
+        "limitations": [
+            "no-liability"
+        ],
+        "conditions": [
+            "include-copyright",
+            "document-changes",
+            "disclose-source",
+            "same-license"
+        ],
+        "permissions": [
+            "commercial-use",
+            "modifications",
+            "distribution",
+            "patent-use",
+            "private-use"
+        ]
+    },
+    "AFL-3.0": {
+        "limitations": [
+            "trademark-use",
+            "no-liability"
+        ],
+        "conditions": [
+            "include-copyright"
+        ],
+        "permissions": [
+            "commercial-use",
+            "modifications",
+            "distribution",
+            "private-use",
+            "patent-use"
+        ]
+    },
+    "ARTISTIC-2.0": {
+        "limitations": [
+            "no-liability",
+            "trademark-use"
+        ],
+        "conditions": [
+            "include-copyright",
+            "document-changes"
+        ],
+        "permissions": [
+            "commercial-use",
+            "modifications",
+            "distribution",
+            "patent-use",
+            "private-use"
+        ]
+    },
+    "LPPL-1.3C": {
+        "limitations": [
+            "no-liability"
+        ],
+        "conditions": [
+            "include-copyright",
+            "document-changes",
+            "disclose-source"
+        ],
+        "permissions": [
+            "commercial-use",
+            "modifications",
+            "distribution",
+            "private-use"
+        ]
+    },
+    "LGPL-2.1": {
+        "limitations": [
+            "no-liability"
+        ],
+        "conditions": [
+            "include-copyright",
+            "disclose-source",
+            "same-license"
+        ],
+        "permissions": [
+            "commercial-use",
+            "modifications",
+            "distribution",
+            "patent-use",
+            "private-use"
+        ]
+    },
+    "EPL-1.0": {
+        "limitations": [
+            "no-liability"
+        ],
+        "conditions": [
+            "disclose-source",
+            "include-copyright",
+            "same-license"
+        ],
+        "permissions": [
+            "commercial-use",
+            "distribution",
+            "modifications",
+            "patent-use",
+            "private-use"
+        ]
+    },
+    "MS-PL": {
+        "limitations": [
+            "no-liability",
+            "trademark-use"
+        ],
+        "conditions": [
+            "include-copyright"
+        ],
+        "permissions": [
+            "commercial-use",
+            "modifications",
+            "distribution",
+            "patent-use",
+            "private-use"
+        ]
+    },
+    "MS-RL": {
+        "limitations": [
+            "no-liability",
+            "trademark-use"
+        ],
+        "conditions": [
+            "include-copyright",
+            "same-license"
+        ],
+        "permissions": [
+            "commercial-use",
+            "modifications",
+            "distribution",
+            "patent-use",
+            "private-use"
+        ]
+    },
+    "EUPL-1.1": {
+        "limitations": [
+            "no-liability",
+            "trademark-use"
+        ],
+        "conditions": [
+            "include-copyright",
+            "disclose-source",
+            "document-changes",
+            "network-use-disclose",
+            "same-license"
+        ],
+        "permissions": [
+            "commercial-use",
+            "modifications",
+            "distribution",
+            "patent-use",
+            "private-use"
+        ]
+    },
+    "CC-BY-SA-4.0": {
+        "limitations": [
+            "no-liability",
+            "trademark-use",
+            "patent-use"
+        ],
+        "conditions": [
+            "include-copyright",
+            "document-changes",
+            "same-license"
+        ],
+        "permissions": [
+            "commercial-use",
+            "modifications",
+            "distribution",
+            "private-use"
+        ]
+    },
+    "OFL-1.1": {
+        "limitations": [
+            "no-liability"
+        ],
+        "conditions": [
+            "include-copyright",
+            "same-license"
+        ],
+        "permissions": [
+            "private-use",
+            "commercial-use",
+            "modifications",
+            "distribution"
+        ]
+    },
+    "LGPL-3.0": {
+        "limitations": [
+            "no-liability"
+        ],
+        "conditions": [
+            "include-copyright",
+            "disclose-source",
+            "same-license"
+        ],
+        "permissions": [
+            "commercial-use",
+            "modifications",
+            "distribution",
+            "patent-use",
+            "private-use"
+        ]
+    },
+    "UNLICENSE": {
+        "limitations": [
+            "no-liability"
+        ],
+        "conditions": [],
+        "permissions": [
+            "private-use",
+            "commercial-use",
+            "modifications",
+            "distribution"
+        ]
+    },
+    "CC-BY-4.0": {
+        "limitations": [
+            "no-liability",
+            "trademark-use",
+            "patent-use"
+        ],
+        "conditions": [
+            "include-copyright",
+            "document-changes"
+        ],
+        "permissions": [
+            "commercial-use",
+            "modifications",
+            "distribution",
+            "private-use"
+        ]
+    },
+    "APACHE-2.0": {
+        "limitations": [
+            "trademark-use",
+            "no-liability"
+        ],
+        "conditions": [
+            "include-copyright",
+            "document-changes"
+        ],
+        "permissions": [
+            "commercial-use",
+            "modifications",
+            "distribution",
+            "patent-use",
+            "private-use"
+        ]
+    }
+}

@@ -8,16 +8,47 @@
   {{#with getLicenseData spdxid }}
   <strong>{{spdxid}}</strong>
   <ul>
-    <li>Name: {{> LicenseUrl}}</li>
+    <li>Name: <a href="{{url}}">{{name}}</a></li>
     <li>osiApproved: {{> LicenseOSI}}</li>
-    {{#if tags}}<li>User Tags: {{tags}}</li>{{/if}}
     {{#if category}}<li>Categories: {{category}} </li>{{/if}}
+    {{#if limitation}}<li>Limitations: {{limitation}} </li>{{/if}}
+    {{#if permission}}<li>Permissions: {{permission}} </li>{{/if}}
+    {{#if conditions}}<li>Conditions: {{conditions}} </li>{{/if}}
+    {{#if tags}}<li>User Tags: {{tags}}</li>{{/if}}
+  </ul>
+  {{/with}}
+</template>
+
+<template name="quickForm_spdxLicenseForm">
+  {{#with atts.doc}}
+    <strong>{{spdxid}}</strong>
+    <ul>
+      <li>Name: <a href="{{url}}">{{name}}</a></li>
+      <li>osiApproved: {{> LicenseOSI}}</li>
+    {{#if isInRole 'admin,editor'}}
+    {{debug this}}
+      {{#autoForm id="spdxLicenseForm" type="update" collection="SpdxLicense" doc=this }}
+        <li>{{> afQuickField name="limitation" }}</li>
+        <li>{{> afQuickField name="conditions" }}</li>
+        <li>{{> afQuickField name="permission" }}</li>
+        <li>{{> afQuickField name="category" }}</li>
+        <li>{{> afQuickField name="tags" }}</li>
+      {{/autoForm}}
+    {{else}}
+      {{#if category}}<li>Categories: {{category}} </li>{{/if}}
+      {{#if limitation}}<li>Limitations: {{limitation}} </li>{{/if}}
+      {{#if permission}}<li>Permissions: {{permission}} </li>{{/if}}
+      {{#if conditions}}<li>Conditions: {{conditions}} </li>{{/if}}
+      {{#if tags}}<li>User Tags: {{tags}}</li>{{/if}}
+    {{/if}}
   </ul>
   {{/with}}
 </template>
 
 <template name="LicenseUrl">
-  <a href="{{url}}">{{name}}</a>
+  {{#afModal template="spdxLicenseForm" collection="SpdxLicense" operation="update" doc=_id }}
+    {{name}}
+  {{/afModal}}
 </template>
 
 <template name="LicenseOSI">
@@ -31,9 +62,12 @@
 <template name="LicenseTags">
   {{#if currentUser }}
     {{#if editing }}
-      {{#autoForm id=(uniqueID "tags") type="update" collection="SpdxLicense" doc=this autosaveOnKeyup=true}}
-        {{> afQuickField name="tags" label=false}}
-      {{/autoForm}}
+      <div class="data-category-form">
+        {{#autoForm id=(uniqueID "tags") type="update"
+            collection="SpdxLicense" doc=this autosaveOnKeyup=true }}
+          {{> afQuickField name="tags" label=false }}
+        {{/autoForm}}
+      </div>
     {{else}}
       <div class="data-category">{{#if tags}}{{tags}}{{else}}&nbsp;{{/if}}</div>
     {{/if}}
@@ -45,9 +79,12 @@
 <template name="LicenseCategory">
   {{#if isInRole 'admin,editor'}}
     {{#if editing }}
-      {{#autoForm id=(uniqueID "category") type="update" collection="SpdxLicense" doc=this autosaveOnKeyup=true}}
-         {{> afQuickField name="category" label=false }}
-      {{/autoForm}}
+      <div class="data-category-form">
+        {{#autoForm id=(uniqueID "category") type="update"
+          collection="SpdxLicense" doc=this autosaveOnKeyup=true}}
+           {{> afQuickField name="category" label=false }}
+        {{/autoForm}}
+      </div>
     {{else}}
       <div class="data-category">{{#if category}}{{category}}{{else}}&nbsp;{{/if}}</div>
     {{/if}}
