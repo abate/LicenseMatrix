@@ -14,12 +14,6 @@ Template.LicenseSwitch.helpers(CommentsHelpers)
 Template.quickForm_MatrixForm.helpers(CommentsHelpers)
 Template.SelectLicenseCell.helpers(CommentsHelpers)
 
-Template.quickForm_MatrixForm.helpers
-  "exampleDoc": () ->
-    LicenseMatrix.findOne(this.atts.doc._id)
-  "notOwner" : (doc) ->
-    (doc.submittedBy != undefined) and (doc.submittedBy != this.usersId)
-
 Template.spdxLicenseView.helpers
   "getLicenseData": (spdxid) ->
     SpdxLicense.findOne(spdxid)
@@ -48,7 +42,26 @@ Template.SelectLicense.helpers
   'AdvancedSearch': () ->
     Session.get('AdvancedSearch')
 
+Template.spdxLicenseForm.helpers
+  'seedCompatilityForm': (spdxid) -> { spdxid1: spdxid }
+  'emptySpdxLicenseCompatibility': (spdxid) ->
+    SpdxLicenseCompatibility.find({ spdxid1: spdxid }).count() == 0
+
 AutoForm.hooks
+  spdxLicenseForm:
+    onSubmit: (insertDoc, updateDoc, currentDoc) ->
+      console.log insertDoc
+      console.log updateDoc
+      console.log "spdxLicenseForm"
+  spdxLicenseCompatibilityForm:
+    onSuccess: (formType, result) ->
+      # this.event.preventDefault()
+      doc = this.currentDoc
+      subdoc = this.insertDoc
+      console.log doc
+      console.log subdoc
+      console.log result
+      console.log  SpdxLicenseCompatibility.findOne(result)
   LicenseCommentsForm:
     onSuccess: (formType, result) ->
       doc = this.currentDoc
@@ -81,64 +94,60 @@ AutoForm.hooks
         if m = s.match(/tag:(.*)/)
           {tags: m[1]}
         else if m = s.match(/cat:(.*)/)
-          {category: m[1]}
+          {categories: m[1]}
         else if m = s.match(/cond:(.*)/)
           {conditions: m[1]}
         else if m = s.match(/lim:(.*)/)
-          {limitation: m[1]}
+          {limitations: m[1]}
         else if m = s.match(/perm:(.*)/)
-          {permission: m[1]}
+          {permissions: m[1]}
         else if m = s.match(/spdx:(.*)/)
           {_id : m[1]}
-        else if m = s.match(/osi:(.*)/)
-          {osiApproved: m[1]}
-      h = doc.field1.map matchsearch
-      v = doc.field2.map matchsearch
-      columns = SpdxLicense.find({$or: v}).fetch()
-      rows = SpdxLicense.find({$or: h}).fetch()
-      localtemplate = this.template
-      do (localtemplate) ->
-        Meteor.subscribe "Licensematrix", {}, () ->
-          console.log "Licensematrix loaded"
-          #onReady callback
-          columnsnames = []
-          columnsnames.push
-            key: 'rowid'
-            label: 'License'
-          for i in columns
+      if doc.field1 and doc.field2
+        h = doc.field1.map matchsearch
+        v = doc.field2.map matchsearch
+        columns = SpdxLicense.find({$or: v}).fetch()
+        rows = SpdxLicense.find({$or: h}).fetch()
+        localtemplate = this.template
+        do (localtemplate) ->
+          Meteor.subscribe "Spdxlicensecompatibility", {}, () ->
+            #onReady callback
+            columnsnames = []
             columnsnames.push
-              key: i._id
-              label: i.spdxid
-          collectionArray = []
-          cache = {}
-          for i in rows
-            tmp = {rowid: i.spdxid}
-            for j in columns
-              [x,y] = orderIDX(i,j)
-              if cache[x+y]
-                tmp[j._id] = null
-              else if x == y
-                tmp[j._id] = null
-              else
-                cache[x+y] = true
-                lm = LicenseMatrix.findOne({spdxid1: x, spdxid2: y})
-                if lm
-                  tmp[j._id] = lm
+              key: 'rowid'
+              label: 'License'
+            for i in columns
+              columnsnames.push
+                key: i._id
+                label: i.spdxid
+            collectionArray = []
+            cache = {}
+            for i in rows
+              tmp = {rowid: i.spdxid}
+              for j in columns
+                [x,y] = [i._id,j._id]
+                if cache[x+y]
+                  tmp[j._id] = null
+                else if x == y
+                  tmp[j._id] = null
                 else
-                  do (tmp,j) ->
-                    Meteor.call('addLicense', x, y, (error,id) ->
-                      console.log "addLicense ready"
-                      tmp[j._id] = LicenseMatrix.findOne(id)
-                      console.log tmp[j._id]
-                    )
-            collectionArray.push tmp
-          settings =
-            collection: collectionArray
-            fields: columnsnames
-          localtemplate.data.tableSettings.set('tableSettings', settings)
-      # $('select').each () ->
-      #   console.log $(this)
-      #   $(this).context.selectize.clear()
+                  cache[x+y] = true
+                  lm = SpdxLicenseCompatibility.findOne({spdxid1: x, spdxid2: y})
+                  if lm
+                    tmp[j._id] = lm
+                  else
+                    do (tmp,j) ->
+                      Meteor.call('addLicense', x, y, (error,id) ->
+                        tmp[j._id] = SpdxLicenseCompatibility.findOne(id)
+                      )
+              collectionArray.push tmp
+            settings =
+              collection: collectionArray
+              fields: columnsnames
+            localtemplate.data.tableSettings.set('tableSettings', settings)
+        # $('select').each () ->
+        #   console.log $(this)
+        #   $(this).context.selectize.clear()
       AutoForm.getValidationContext(this.formId).resetValidation()
       AutoForm.resetForm(this.formId)
       this.done()

@@ -13,14 +13,15 @@ Security.defineMethod "ifIsCurrentUser",
 
 # a user can update a compatibility information, but only editors and admin ca
 # verify the information
-LicenseMatrix.permit('insert').ifLoggedIn().apply() #exceptProps(['verified','verifiedBy']).apply()
-# LicenseMatrix.permit('update').ifIsOwner().exceptProps(['verified','verifiedBy']).apply()
-LicenseMatrix.permit('update').ifHasRole(['editor','admin']).onlyProps(['verified','verifiedBy','analysis']).apply()
+SpdxLicenseCompatibility.permit('insert').ifLoggedIn().apply() #exceptProps(['verified','submittedBy']).apply()
+SpdxLicenseCompatibility.permit('remove').ifIsOwner().ifLoggedIn().apply()
+SpdxLicenseCompatibility.permit('update').ifIsOwner().ifLoggedIn().exceptProps(['verified','submittedBy']).apply()
+SpdxLicenseCompatibility.permit('update').ifHasRole(['editor','admin']).apply()
 
 # allow users to add tags
 SpdxLicense.permit('update').ifLoggedIn().onlyProps(['tags']).apply()
 # allow editos to add categories
-SpdxLicense.permit('update').ifHasRole(['editor','admin']).onlyProps(['category']).apply()
+SpdxLicense.permit('update').ifHasRole(['editor','admin']).onlyProps(['categories','limitations','conditions','permissions']).apply()
 
 # all users can add a row in the moderation table, but only editors and
 # admins can remove or update

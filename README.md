@@ -1,4 +1,4 @@
-# LicenseMatrix
+# SpdxLicenseCompatibility
 
 A simple meteor application compare spdx licenses
 

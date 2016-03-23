@@ -4,59 +4,120 @@
       settings=LicensesTableSettings }}
 </template>
 
+<template name="SpdxLicenseCompatibilityTable" >
+  {{> reactiveTable class="table table-bordered table-hover"
+      settings=(SpdxLicenseCompatibilityTableSettings spdxid1) }}
+</template>
+
+<template name="SpdxLicenseCompatibilityTableEmpty" >
+</template>
+
+<template name="SpdxLicenseCompatibilityForm" >
+  {{> quickForm id="spdxLicenseCompatibilityForm" type="update"
+    collection="SpdxLicenseCompatibility" doc=_id }}
+</template>
+
+<template name="SpdxLicenseCompatibilityEdit">
+  {{#if isInRole 'admin,editor'}}
+    {{#afModal class="fa fa-pencil fa-fw" operation="update"
+      collection="SpdxLicenseCompatibility"
+      template="SpdxLicenseCompatibilityForm" doc=_id }}
+    {{/afModal}}
+  {{/if}}
+</template>
+
+<template name="SpdxLicenseCompatibilityDelete">
+  {{#if isInRole 'admin,editor'}}
+    <i class="delete fa fa-trash"></i>
+  {{/if}}
+</template>
+
+<template name="SelectUL">
+  {{#if value}}
+    <b>{{label}}</b>
+    <ul>
+      {{#each value}}
+      <li>{{this}}</li>
+      {{/each}}
+    </ul>
+  {{/if}}
+</template>
+
 <template name="spdxLicenseView">
   {{#with getLicenseData spdxid }}
   <strong>{{spdxid}}</strong>
   <ul>
     <li>Name: <a href="{{url}}">{{name}}</a></li>
-    <li>osiApproved: {{> LicenseOSI}}</li>
-    {{#if category}}<li>Categories: {{category}} </li>{{/if}}
-    {{#if limitation}}<li>Limitations: {{limitation}} </li>{{/if}}
-    {{#if permission}}<li>Permissions: {{permission}} </li>{{/if}}
-    {{#if conditions}}<li>Conditions: {{conditions}} </li>{{/if}}
+    {{#if categories}}<li>Categories: {{#each categories}}{{getLabel this "categories"}}{{/each}} </li>{{/if}}
+    {{#if limitations}}<li>Limitations: {{#each limitations}}{{getLabel this "limitations"}}{{/each}} </li>{{/if}}
+    {{#if permissions}}<li>Permissions: {{#each permissions}}{{getLabel this "permissions"}}{{/each}}</li>{{/if}}
+    {{#if conditions}}<li>Conditions: {{#each conditions}}{{getLabel this "conditions"}}{{/each}}</li>{{/if}}
     {{#if tags}}<li>User Tags: {{tags}}</li>{{/if}}
   </ul>
   {{/with}}
 </template>
 
-<template name="quickForm_spdxLicenseForm">
-  {{#with atts.doc}}
-    <strong>{{spdxid}}</strong>
-    <ul>
-      <li>Name: <a href="{{url}}">{{name}}</a></li>
-      <li>osiApproved: {{> LicenseOSI}}</li>
-    {{#if isInRole 'admin,editor'}}
-    {{debug this}}
-      {{#autoForm id="spdxLicenseForm" type="update" collection="SpdxLicense" doc=this }}
-        <li>{{> afQuickField name="limitation" }}</li>
-        <li>{{> afQuickField name="conditions" }}</li>
-        <li>{{> afQuickField name="permission" }}</li>
-        <li>{{> afQuickField name="category" }}</li>
-        <li>{{> afQuickField name="tags" }}</li>
-      {{/autoForm}}
-    {{else}}
-      {{#if category}}<li>Categories: {{category}} </li>{{/if}}
-      {{#if limitation}}<li>Limitations: {{limitation}} </li>{{/if}}
-      {{#if permission}}<li>Permissions: {{permission}} </li>{{/if}}
-      {{#if conditions}}<li>Conditions: {{conditions}} </li>{{/if}}
-      {{#if tags}}<li>User Tags: {{tags}}</li>{{/if}}
+<template name="spdxLicenseFields">
+  {{#if isInRole 'admin,editor'}}
+    {{#autoForm id=(uniqueID "fieldForm" name) type="update"
+      fields=name collection="SpdxLicense" doc=doc autosave=true }}
+      {{> afQuickField name=name }}
+    {{/autoForm}}
+  {{else}}
+    {{#if value}}
+      <b>{{label}}:</b>
+      <ul>
+      {{#each value}}
+        <li>{{getLabel this ../name}}</li>
+      {{/each}}
+      </ul>
     {{/if}}
+  {{/if}}
+</template>
+
+<template name="spdxLicenseForm">
+  <strong>{{spdxid}}</strong>
+  <ul>
+    <li><b>Name</b>: <a href="{{url}}" title="License Text">{{name}}</a></li>
+    {{> spdxLicenseFields doc=this name="tags" label="Tags" value=tags }}
+    {{> spdxLicenseFields doc=this name="categories" label="Categories" value=categories }}
   </ul>
-  {{/with}}
+  <div class="row">
+    <div class="col-md-4">
+      {{> spdxLicenseFields doc=this name="limitations" label="Limitations" value=limitations }}
+    </div>
+    <div class="col-md-4">
+      {{> spdxLicenseFields doc=this name="permissions" label="Permissions" value=permissions }}
+    </div>
+    <div class="col-md-4">
+      {{> spdxLicenseFields doc=this name="conditions" label="Conditions" value=conditions }}
+    </div>
+  </div>
+  <div class="row">
+    {{#if isInRole 'admin,editor'}}
+      {{#autoForm id="spdxLicenseCompatibilityForm" type="insert"
+        collection="SpdxLicenseCompatibility" class="form-inline"}}
+          {{ spdxid }}
+          {{> afQuickField name="spdxid1" value=_id type="hidden"}}
+          {{> afQuickField name="orlater"}}
+          {{> afQuickField name="exceptions" class="col-md-3"}}
+          {{> afQuickField name="compatibility" class="col-md-3"}}
+          {{> afQuickField name="spdxid2" class="col-md-3"}}
+          <button type="submit" class="btn btn-primary">Add</button>
+      {{/autoForm}}
+    {{/if}}
+    {{#unless emptySpdxLicenseCompatibility _id }}
+      {{> SpdxLicenseCompatibilityTable spdxid1=_id }}
+    {{/unless}}
+  </div>
+</template>
+
+<template name="quickForm_spdxLicenseForm">
+  {{#with atts.doc}}{{> spdxLicenseForm}}{{/with}}
 </template>
 
 <template name="LicenseUrl">
-  {{#afModal template="spdxLicenseForm" collection="SpdxLicense" operation="update" doc=_id }}
-    {{name}}
-  {{/afModal}}
-</template>
-
-<template name="LicenseOSI">
-  {{#if osiApproved}}
-    <i class="fa fa-check-square-o"></i>
-  {{else}}
-    No
-  {{/if}}
+  <a href={{pathFor route='licensepage' spdxid=spdxid}}>{{name}}</a>
 </template>
 
 <template name="LicenseTags">
@@ -80,21 +141,27 @@
   {{#if isInRole 'admin,editor'}}
     {{#if editing }}
       <div class="data-category-form">
-        {{#autoForm id=(uniqueID "category") type="update"
+        {{#autoForm id=(uniqueID "categories") type="update"
           collection="SpdxLicense" doc=this autosaveOnKeyup=true}}
-           {{> afQuickField name="category" label=false }}
+           {{> afQuickField name="categories" label=false }}
         {{/autoForm}}
       </div>
     {{else}}
-      <div class="data-category">{{#if category}}{{category}}{{else}}&nbsp;{{/if}}</div>
+      <div class="data-category">
+        {{#if categories}}
+          {{#each categories}}
+            {{getLabel this "categories"}}
+          {{/each}}
+        {{else}}
+        &nbsp;
+        {{/if}}
+      </div>
     {{/if}}
   {{else}}
-    {{category}}
+    {{#each categories}}
+      {{getLabel this "categories"}}
+    {{/each}}
   {{/if}}
-</template>
-
-<template name="LicenseCommentsSingle">
-  {{#if analysis}}<div>Compatibility: {{analysis.compatibility}}</div>{{/if}}
 </template>
 
 <template name="LicenseComments">
@@ -104,22 +171,8 @@
     <div class="alert alert-warning" role="alert">You need to login to {{sessionGet 'loginAction'}}</div>
   {{/if}}
 
-  {{#if currentUser }}
-    {{#autoForm collection=CommentsCollection id=id role="form" class=(formclass reply)}}
-      <div class="form-group">
-        {{> afFieldInput name="content" type="textarea"
-            label="Comment"
-            placeholder=(take key='placeholder-textarea' default='Join the discussion')
-            class=(textareaclass reply) rows=3 }}
-        {{> afQuickField name="analysis" }}
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </div>
-    {{/autoForm}}
-  {{/if}}
-
   <div class="media-list comments">
     {{#each comment}}
-      {{#if analysis}}<div>Compatibility: {{analysis.compatibility}}</div>{{/if}}
       {{> commentsSingleComment }}
     {{/each}}
   </div>

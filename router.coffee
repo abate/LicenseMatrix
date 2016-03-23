@@ -18,6 +18,12 @@ Router.route '/licenses', {
   template: 'LicensesTable'
 }
 
+Router.route '/licenses/:spdxid', {
+  name: 'licensepage'
+  template: 'spdxLicenseForm'
+  data: () ->
+    SpdxLicense.findOne ({spdxid: this.params.spdxid})
+}
 Router.route '/download', {
   name: 'download'
   template: 'DownloadData'
@@ -31,10 +37,10 @@ Router.route '/download/spdx',
     data = JSON.stringify(SpdxLicense.find(
       {$or: [
         {tags: {$exists: true, $ne: []}},
-        {category: {$exists: true, $ne: []}},
-        {permission: {$exists: true, $ne: []}},
+        {categories: {$exists: true, $ne: []}},
+        {permissions: {$exists: true, $ne: []}},
         {conditions: {$exists: true, $ne: []}},
-        {limitation: {$exists: true, $ne: []}},
+        {limitations: {$exists: true, $ne: []}},
       ]}).fetch())
     filename = 'spdx-annotation.json'
     @response.setHeader("Content-Type", "application/json")
@@ -47,7 +53,7 @@ Router.route '/download/matrix',
   where: 'server'
   name: 'download-matrix'
   action: () ->
-    data = JSON.stringify(LicenseMatrix.find().fetch())
+    data = JSON.stringify(SpdxLicenseCompatibility.find().fetch())
     filename = 'spdx-matrix.json'
     @response.setHeader("Content-Type", "application/json")
     @response.setHeader("Content-Disposition", 'attachment; filename=' + filename)

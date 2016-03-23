@@ -5,7 +5,7 @@
 
 <template name="ModerationActions">
   {{debug}}
-  {{#afModal class="fa fa-pencil fa-fw" collection="LicenseMatrix" template="MatrixFormModeration" operation="update" doc=docid}}
+  {{#afModal class="fa fa-pencil fa-fw" collection="SpdxLicenseCompatibility" template="MatrixFormModeration" operation="update" doc=docid}}
   {{/afModal}}
   {{#afModal class="fa fa-times fa-fw" collection="ModerationTable" operation="remove" doc=rowid}}{{/afModal}}
 </template>

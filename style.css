@@ -1,3 +1,36 @@
 .bold{
   font-weight: bold;
 }
+#spdxLicenseCompatibilityForm .selectize-input {
+    width: 170px !important;
+}
+#spdxLicenseCompatibilityForm .selectize-dropdown, {
+    width: 170px !important;
+}
+/*.selectize-control { width: 60%; }*/
+.incompatible {
+  background-image: linear-gradient(
+    to top right,
+    white 48%,
+    black,
+    white 52%
+  );
+}
+
+.compatible {
+  background-image: linear-gradient(
+    to top right,
+    white 48%,
+    black,
+    white 52%
+  );
+}
+
+.relicensing {
+  background-image: linear-gradient(
+    to top right,
+    white 48%,
+    black,
+    white 52%
+  );
+}

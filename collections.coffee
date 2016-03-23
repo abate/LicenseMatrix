@@ -1,8 +1,7 @@
 console.log "collections"
-@LicenseMatrix = new Mongo.Collection 'Licensematrix'
+@SpdxLicenseCompatibility = new Mongo.Collection 'Spdxlicensecompatibility'
 @SpdxLicense = new Mongo.Collection 'Spdxlicense'
 @ModerationTable = new Mongo.Collection "Moderationtable"
-# @spdxLicenseIds = Object.keys(spdxLicenseDict)
 
 @Schemas = {}
 
@@ -10,37 +9,75 @@ SimpleSchema.messages
   "AnalysisMismatch": "You must specify both the relation and compatibility type"
   "AnalysisRequired": "You must add at least one compatibility item"
 
-Schemas.LicenseAnalysis = new SimpleSchema(
-  relation:
-    type: [String]
-    allowedValues: LicenseReleation.map (e) -> e.value
-    label: "Relation Type"
+Schemas.SpdxLicenseCompatibility = new SimpleSchema(
+  spdxid1:
+    type: String
     autoform:
-      type: "select"
+      label: false
+      type: "hidden"
+  orlater:
+    type: Boolean
+    defaultValue: false
+    optional: true
+    autoform:
+      label: "Or Later"
+      type: "boolean-checkbox"
+  exceptions:
+    type: String
+    optional: true
+    allowedValues: spdxExceptions
+    autoform:
+      label: false
+      placeholder: "Exception"
       afFieldInput:
-        options: LicenseReleation
-      afFormGroup:
-        'formgroup-class': 'col-sm-6'
-    # custom: () ->
-    #   if (!this.isSet || this.value == null || this.value == "")
-    #     "AnalysisMismatch"
+        type: "selectize"
+        options: "allowed"
   compatibility:
-    type: [String]
+    type: String
     allowedValues: LicenseCompatibility.map (e) -> e.value
-    label: "Compatibility"
     autoform:
-      type: "select"
+      label: false
+      placeholder: "Compatibility"
+      type: "selectize"
       afFieldInput:
-        options: (e) ->
-          console.log e
-          console.log Template.instance()
-          LicenseCompatibility
-      afFormGroup:
-        'formgroup-class': 'col-sm-6'
-    # custom: () ->
-    #   if (!this.isSet || this.value == null || this.value == "")
-    #     "AnalysisMismatch"
+        options: LicenseCompatibility
+  spdxid2:
+    type: String
+    autoform:
+      type: "selectize"
+      placeholder: "With"
+      label: false
+      afFieldInput:
+        options: () ->
+          SpdxLicense.find().map (l) -> {label: l.spdxid, value: l._id }
+        selectOnBlur: true
+  url:
+    type: String
+    label: 'Source'
+    optional: true
+  explanation:
+    type: String
+    optional: true
+    label: "Detailed Explanation"
+    autoform:
+      afFieldInput:
+        type: "textarea",
+        rows: 10
+  verified:
+    type: Boolean
+    defaultValue: false
+    autoform:
+      type: "boolean-checkbox"
+  submittedBy :
+    type: String
+    optional: true
+    autoform:
+      type: "hidden"
+    autoValue: () ->
+      this.userId
 )
+
+SpdxLicenseCompatibility.attachSchema(Schemas.SpdxLicenseCompatibility)
 
 Schemas.SpdxLicense = new SimpleSchema(
   name:
@@ -50,20 +87,16 @@ Schemas.SpdxLicense = new SimpleSchema(
     type: String
     label: 'the url to retrive the License'
     optional: true
-  osiApproved:
-    type: Boolean
-    label: 'True if the License OSI approved'
-    defaultValue: false
   spdxid:
     type: String
     label: 'The SPDX License ID'
-  category:
+  categories:
     type: [String]
-    label: 'Category'
+    label: 'Categories'
     optional: true
     allowedValues: LicenseCategory.map (e) -> e.value
     autoform:
-      type: "select2"
+      type: "selectize"
       afFieldInput:
         options: LicenseCategory
         multiple: true
@@ -75,31 +108,31 @@ Schemas.SpdxLicense = new SimpleSchema(
     optional: true
     allowedValues: LicenseCharacteristic["conditions"].map (e) -> e.tag
     autoform:
-      type: "select2"
+      type: "selectize"
       afFieldInput:
         options: LicenseCharacteristic["conditions"].map (e) -> { label: e.label, value: e.tag }
         multiple: true
         tags: true
         selectOnBlur: true
-  limitation:
+  limitations:
     type: [String]
     label: 'Limitations'
     optional: true
     allowedValues: LicenseCharacteristic["limitations"].map (e) -> e.tag
     autoform:
-      type: "select2"
+      type: "selectize"
       afFieldInput:
         options: LicenseCharacteristic["limitations"].map (e) -> { label: e.label, value: e.tag }
         multiple: true
         tags: true
         selectOnBlur: true
-  permission:
+  permissions:
     type: [String]
     label: 'Permissions'
     optional: true
     allowedValues: LicenseCharacteristic["permissions"].map (e) -> e.tag
     autoform:
-      type: "select2"
+      type: "selectize"
       afFieldInput:
         options: LicenseCharacteristic["permissions"].map (e) -> { label: e.label, value: e.tag }
         multiple: true
@@ -128,12 +161,14 @@ licenseSearchOptions = () ->
 commonSearchOptionsSelect = () -> [
   {label: "GPL vs GPL", value: "GPLvsGPL"  },
   {label: "Osi vs Osi", value: "OSIvsOSI" },
+  {label: "Fsf vs Osi", value: "FSFvsOSI" },
   {label: "Cecile vs GPL", value: "CECILEvsGPL"}
 ]
 
 @commonSearchOptions = []
 commonSearchOptions["GPLvsGPL"] = {field1: ["tag:gpl"], field2: ["tag:gpl"]}
-commonSearchOptions["OSIvsOSI"] = {field1: ["osi:true"], field2: ["osi:true"]}
+commonSearchOptions["OSIvsOSI"] = {field1: ["cat:osi"], field2: ["cat:osi"]}
+commonSearchOptions["FSFvsOSI"] = {field1: ["cat:fsf"], field2: ["cat:osi"]}
 commonSearchOptions["CECILEvsGPL"] = {field1: ["tag:cecill"], field2: ["tag:gpl"]}
 
 Schemas.SpdxLicenseSearch = new SimpleSchema(
@@ -141,11 +176,6 @@ Schemas.SpdxLicenseSearch = new SimpleSchema(
     type: [String]
     label: "Common Licenses Matrix"
     optional: true
-    # custom: () ->
-    #   shouldBeRequired = this.field('field1').value == [] && this.field('field2').value == []
-    #   if shouldBeRequired
-    #     if (!this.isSet || this.value === null || this.value === "")
-    #       "required"
     autoform:
       type: "select"
       options: commonSearchOptionsSelect
@@ -155,11 +185,6 @@ Schemas.SpdxLicenseSearch = new SimpleSchema(
     type: [String]
     label: 'Rows'
     optional: true
-    # custom: () ->
-    #   shouldBeRequired = this.field('commonOptions').value == [] || this.field('field2').value == []
-    #   if shouldBeRequired
-    #     if (!this.isSet || this.value === null || this.value === "")
-    #       "required"
     autoform:
       type: "selectize"
       options: licenseSearchOptions
@@ -173,11 +198,6 @@ Schemas.SpdxLicenseSearch = new SimpleSchema(
     type: [String]
     label: 'Columns'
     optional: true
-    # custom: () ->
-    #   shouldBeRequired = this.field('commonOptions').value == [] || this.field('field1').value == []
-    #   if shouldBeRequired
-    #     if (!this.isSet || this.value === null || this.value === "")
-    #       "required"
     autoform:
       type: "selectize"
       options: licenseSearchOptions
@@ -188,47 +208,6 @@ Schemas.SpdxLicenseSearch = new SimpleSchema(
       afFormGroup:
         'formgroup-class': 'col-sm-5'
 )
-
-Comments.changeSchema (currentSchema) ->
-  currentSchema.analysis =
-    type: [Schemas.LicenseAnalysis]
-    optional: true
-    autoform:
-      afObjectField:
-        bodyClass: 'container-fluid row'
-  currentSchema
-
-Schemas.LicenseMatrix = new SimpleSchema(
-  spdxid1:
-    type: String
-    autoform:
-      readonly: true
-    denyUpdate: true
-  spdxid2:
-    type: String
-    autoform:
-      readonly: true
-    denyUpdate: true
-  analysis:
-    type: [Schemas.LicenseAnalysis]
-    optional: true
-    autoform:
-      afObjectField:
-        bodyClass: 'container-fluid row'
-  verified:
-    type: Boolean
-    defaultValue: false
-    # custom: () ->
-    #   if not this.field('analysis').isSet
-    #     "AnalysisRequired"
-  verifiedBy :
-    type: String
-    optional: true
-    autoValue: () ->
-      this.userId
-)
-
-LicenseMatrix.attachSchema(Schemas.LicenseMatrix)
 
 Schemas.UserProfile = new SimpleSchema(
   firstName:
@@ -290,11 +269,11 @@ Schemas.User = new SimpleSchema(
   roles:
     type: [String],
     allowedValues: ['user','editor', 'admin'],
+    defaultValue: ['user']
     autoform:
       afFieldInput:
         type: "select",
         options: "allowed"
-    defaultValue: ['user']
 )
 
 Meteor.users.attachSchema Schemas.User
@@ -302,15 +281,12 @@ Meteor.users.attachSchema Schemas.User
 @orderIDX = (i,j) ->
   if i.spdxid >= j.spdxid then [i._id,j._id] else [j._id,i._id]
 
-Meteor.isServer and Meteor.publish "Licensematrix", () ->
-  # [x,y] = orderIDX(i,j)
-  LicenseMatrix.find()
-  # {spdxid1:x,spdxid2:y})
-# Meteor.isClient and Meteor.subscribe "Licensematrix"
+Meteor.isServer and Meteor.publish "Spdxlicensecompatibility", () ->
+  SpdxLicenseCompatibility.find()
+Meteor.isClient and Meteor.subscribe "Spdxlicensecompatibility"
 
 Meteor.isServer and Meteor.publish "Spdxlicense", () -> SpdxLicense.find()
 Meteor.isClient and Meteor.subscribe "Spdxlicense"
-
 
 Meteor.isServer and Meteor.publish "UserDirectory", () ->
   Meteor.users.find {}, {fields: {emails: 1, profile: 1}}

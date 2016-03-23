@@ -2,10 +2,6 @@ Template.LicenseTags.onCreated () ->
   this.isEditingTag = false
   this.isEditingTagDep = new Deps.Dependency()
 
-# Template.LicenseTags.onRendered () ->
-#   console.log ["after rendered",$('.data-category-form'),this]
-#   $('.data-category-form').first().focus()
-
 Template.LicenseTags.helpers
   'editing': () ->
     self = Template.instance()
@@ -34,13 +30,13 @@ Template.LicenseCategory.helpers
     self.isEditingCat
 
 Template.LicenseCategory.events
-  'click .data-category': (e, t) ->
-    console.log "data-category click category"
+  'click .data-category': (e,t) ->
+    console.log "data-category"
     t.isEditingCat = true
     t.isEditingCatDep.changed()
-  'blur': (e, t) ->
-    console.log "LicensesTable form click category"
-    t.isEditingTag = false
+  'blur .data-category-form': (e, t) ->
+    console.log "data-category-form"
+    t.isEditingCat = false
     t.isEditingCatDep.changed()
 
 Template.SelectLicense.helpers
@@ -55,7 +51,6 @@ Template.SelectLicense.helpers
             e['tmpl'] = Template.SelectLicenseName
           else
             e['tmpl'] = Template.SelectLicenseCell
-      console.log t
       t
     else { fields: ["License"], collection: [] }
 
@@ -75,14 +70,38 @@ Template.SelectLicense.onCreated () ->
   console.log "onCreated"
   this.tableSettings = new ReactiveDict()
 
+Template.SpdxLicenseCompatibilityTable.events 'click .reactive-table tbody tr': (event) ->
+  event.preventDefault()
+  if event.target.className == 'delete fa fa-trash'
+    SpdxLicenseCompatibility.remove(this._id)
+
+isAuthorized = () ->
+  userId=Meteor.userId()
+  !(Roles.userIsInRole(userId, [ 'editor','admin' ]))
+
+Template.SpdxLicenseCompatibilityTable.helpers
+  'SpdxLicenseCompatibilityTableSettings': (spdxid1) ->
+    collection: SpdxLicenseCompatibility.find({spdxid1: spdxid1})
+    showFilter: false
+    showNavigation: "auto"
+    rowsPerPage: 20
+    # noDataTmpl: SpdxLicenseCompatibilityTableEmpty
+    fields: [
+      {key: "spdxid1", label: "License", sortable: false, fn: (spdxid1) -> SpdxLicense.findOne(spdxid1).spdxid},
+      {key: "orlater", label: "", sortable: false, fn: (orlater) -> if orlater == true then "+" else ""},
+      {key: "exceptions", label: "With Exceptions", sortable: false},
+      {key: "compatibility", label: "Compatibility", sortable: false},
+      {key: "spdxid2", label: "With", sortable: false, fn: (spdxid2) -> SpdxLicense.findOne(spdxid2).spdxid},
+      {key: "delete", label: "", sortable: false, tmpl: Template.SpdxLicenseCompatibilityDelete, hidden: () -> isAuthorized() },
+      {key: "update", label: "", sortable: false, tmpl: Template.SpdxLicenseCompatibilityEdit, hidden: () -> isAuthorized() }
+    ]
+
 Template.LicensesTable.helpers
   'LicensesTableSettings': () ->
     collection: SpdxLicense
     fields: [
-      # {key: "spdxid", label:"SPDX-ID"},
       {key: "url", label: "Name", tmpl: Template.LicenseUrl },
-      {key: "osiApproved", label:"OSI", tmpl: Template.LicenseOSI },
-      {key: "category", label:"Category", tmpl: Template.LicenseCategory },
+      {key: "categories", label:"Category", tmpl: Template.LicenseCategory },
       {key: "tags", label:"Tags", tmpl: Template.LicenseTags },
     ]
 

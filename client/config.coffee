@@ -6,17 +6,6 @@ Comments.ui.config
   template: 'bootstrap'
   markdown: true
 
-# Comments.config
-#   beforeInsert: (e) ->
-#     console.log "AAAAAAA"
-#     console.log e.target
-#     if 'analysis.compatibility' in e.target
-#       v = [e.target['analysis.compatibility'].value]
-#       { "analysis" : { compatibility: v } }
-#     else {}
-#   onSuccess: (id) ->
-#     AutoForm.resetForm(id)
-
 Accounts.ui.config
   passwordSignupFields: 'EMAIL_ONLY'
   requestPermissions: {}

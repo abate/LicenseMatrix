@@ -7,7 +7,7 @@
       </div>
       <div class="col-md-2">
         {{#if atts.doc.verified }}
-          <div>Verified by {{getRealName atts.doc.verifiedBy}}</div>
+          <!-- <div>Verified by {{getRealName atts.doc.verifiedBy}}</div> -->
           <i class="fa fa-lock"></i>
         {{else}}
           <i class="fa fa-unlock"></i>
@@ -25,20 +25,16 @@
   {{> MatrixFormHeading }}
   {{#if isInRole 'admin,editor'}}
     {{#autoForm id="MatrixForm" class="clearfix"
-      collection="LicenseMatrix" omitFields="spdxid1,spdxid2,verifiedBy"
+      collection="SpdxLicenseCompatibility" omitFields="spdxid1,spdxid2,verifiedBy"
       type="update" doc=atts.doc }}
-    <fieldset>
-      {{> afQuickFields }}
-      <div><button type="submit" class="btn btn-primary">Submit</button></div>
-    </fieldset>
+      <fieldset>
+        {{> afQuickFields }}
+        <div><button type="submit" class="btn btn-primary">Submit</button></div>
+      </fieldset>
     {{/autoForm}}
   {{else}}
     <h4>Licence Compatibility Metadata</h4>
-    <ul>
-    {{#each atts.doc.analysis}}
-      <li>{{relation}} - {{compatibility}}</li>
-    {{/each}}
-    </ul>
+    {{> SpdxLicenseCompatibilityTable spdxid1=atts.doc.spdxid1 }}
   {{/if}}
 
   {{#unless hascomments atts.doc._id }}
@@ -54,7 +50,7 @@
   {{> MatrixFormHeading }}
   <hr/>
   {{#autoForm id="MatrixFormModeration" class="clearfix"
-    collection="LicenseMatrix" type="update" doc=atts.doc
+    collection="SpdxLicenseCompatibility" type="update" doc=atts.doc
     omitFields="spdxid1,spdxid2,verifiedBy" }}
   <fieldset>
     {{> afQuickFields }}
