@@ -1,7 +1,6 @@
 twbs:bootstrap
 coffeescript
 mquandalle:bower
-standard-minifiers
 meteor-base
 mobile-experience
 mongo
@@ -30,10 +29,11 @@ dburles:collection-helpers
 cloudspider:autoform-tags-typeahead
 matb33:collection-hooks
 aldeed:autoform-select2
-natestrauser:select2
 arkham:comments-ui
 aslagle:reactive-table
 zimme:select2-bootstrap3-css
 reactive-dict
 comerc:autoform-selectize
 chhib:selectize-bootstrap-3
+standard-minifier-css
+standard-minifier-js
