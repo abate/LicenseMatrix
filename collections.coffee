@@ -15,7 +15,7 @@ Schemas.SpdxLicenseCompatibility = new SimpleSchema(
     autoform:
       label: false
       type: "hidden"
-  orlater:
+  orlater1:
     type: Boolean
     defaultValue: false
     optional: true
@@ -51,9 +51,35 @@ Schemas.SpdxLicenseCompatibility = new SimpleSchema(
         options: () ->
           SpdxLicense.find().map (l) -> {label: l.spdxid, value: l._id }
         selectOnBlur: true
+  orlater2:
+    type: Boolean
+    defaultValue: false
+    optional: true
+    autoform:
+      label: "Or Later"
+      type: "boolean-checkbox-plus"
+  relicenseto:
+    type: String
+    optional: true
+    autoform:
+      type: "selectize"
+      placeholder: "Re-License to"
+      label: false
+      afFieldInput:
+        options: () ->
+          SpdxLicense.find().map (l) -> {label: l.spdxid, value: l._id }
+        selectOnBlur: true
+  orlater3:
+    type: Boolean
+    defaultValue: false
+    optional: true
+    autoform:
+      label: "Or Later"
+      type: "boolean-checkbox-plus"
   special:
     type: Boolean
     defaultValue: false
+    optional: true
     autoform:
       label: "Special Case"
       type: "boolean-checkbox"

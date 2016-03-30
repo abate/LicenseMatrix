@@ -46,14 +46,14 @@ Template.spdxLicenseForm.helpers
   'seedCompatilityForm': (spdxid) -> { spdxid1: spdxid }
   'emptySpdxLicenseCompatibility': (spdxid) ->
     SpdxLicenseCompatibility.find({ spdxid1: spdxid }).count() == 0
-  'compatibilityOptions': () ->
-    spdxid = this.spdxid
-    options = Schemas.SpdxLicenseCompatibility.schema('compatibility').autoform.afFieldInput.options
-    _.map(options,(o) ->
-      if o.value == 'left-relicensing'
-        o.label= "Compatible/Relicensing to " + spdxid
-      return o
-    )
+  # 'compatibilityOptions': () ->
+  #   spdxid = this.spdxid
+  #   options = Schemas.SpdxLicenseCompatibility.schema('compatibility').autoform.afFieldInput.options
+  #   _.map(options,(o) ->
+  #     if o.value == 'left-relicensing'
+  #       o.label= "Compatible/Relicensing to " + spdxid
+  #     return o
+  #   )
 
 AutoForm.hooks
   spdxLicenseForm:

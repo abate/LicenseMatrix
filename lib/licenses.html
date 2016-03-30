@@ -106,11 +106,14 @@
         collection="SpdxLicenseCompatibility" class="form-inline"}}
           {{ spdxid }}
           {{> afQuickField name="spdxid1" value=_id type="hidden"}}
-          {{> afQuickField name="orlater" label=false }} <b>with</b>
+          {{> afQuickField name="orlater1" label=false }} <b>with</b>
           {{> afQuickField name="exceptions" class="col-md-3"}}<b>is</b>
-          {{> afQuickField name="compatibility" class="col-md-3" options=compatibilityOptions}}<b>with</b>
+          {{> afQuickField name="compatibility" class="col-md-3"}}<b>with</b>
           {{> afQuickField name="spdxid2" class="col-md-3"}}
-          <button type="submit" class="btn btn-primary">Add</button>
+          {{> afQuickField name="orlater2" label=false }} <b>must be relicend to</b>
+          {{> afQuickField name="relicenseto" class="col-md-3"}}
+          {{> afQuickField name="orlater3" label=false }}
+          <button type="submit" class="btn btn-primary"><i class="fa fa-plus"></i></button>
       {{/autoForm}}
     {{/if}}
     {{#unless emptySpdxLicenseCompatibility _id }}
