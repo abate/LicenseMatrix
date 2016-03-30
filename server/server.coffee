@@ -60,8 +60,11 @@ Meteor.startup ->
     MatrixData = JSON.parse(Assets.getText('spdx-matrix.json'))
 
     for e in MatrixData
-      if e.verified
-        SpdxLicenseCompatibility.insert(e)
+      e.spdxid1 = SpdxLicense.findOne({spdxid:e.spdxid1})._id
+      e.spdxid2 = SpdxLicense.findOne({spdxid:e.spdxid2})._id
+      if e.relicenseto
+        e.relicenseto = SpdxLicense.findOne({spdxid:e.relicenseto})._id
+      SpdxLicenseCompatibility.insert(e)
 
     gpl2id = SpdxLicense.findOne({spdxid: "GPL-2.0"})._id
     gpl3id = SpdxLicense.findOne({spdxid: "GPL-3.0"})._id

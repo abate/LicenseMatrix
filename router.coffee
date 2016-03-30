@@ -53,7 +53,15 @@ Router.route '/download/matrix',
   where: 'server'
   name: 'download-matrix'
   action: () ->
-    data = JSON.stringify(SpdxLicenseCompatibility.find().fetch())
+    data = JSON.stringify(SpdxLicenseCompatibility.find().map((u) ->
+      delete u._id
+      u.spdxid1 = SpdxLicense.findOne(u.spdxid1).spdxid
+      u.spdxid2 = SpdxLicense.findOne(u.spdxid2).spdxid
+      if u.relicenseto
+        u.relicenseto = SpdxLicense.findOne(u.relicenseto).spdxid
+      return u
+      )
+    )
     filename = 'spdx-matrix.json'
     @response.setHeader("Content-Type", "application/json")
     @response.setHeader("Content-Disposition", 'attachment; filename=' + filename)
@@ -79,7 +87,7 @@ Router.route '/profile', {
     unless Meteor.user()
       this.render('home')
     else
-      this.next();
+        this.next();
 }
 
 Router.configure { layoutTemplate: 'home' }
