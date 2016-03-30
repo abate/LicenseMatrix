@@ -90,7 +90,7 @@ Template.SpdxLicenseCompatibilityTable.helpers
       {key: "spdxid1", label: "License", sortable: false, fn: (spdxid1) -> SpdxLicense.findOne(spdxid1).spdxid},
       {key: "orlater", label: "", sortable: false, fn: (orlater) -> if orlater == true then "+" else ""},
       {key: "exceptions", label: "With Exceptions", sortable: false},
-      {key: "compatibility", label: "Compatibility", sortable: false},
+      {key: "compatibility", label: "Compatibility", sortable: false, tmpl: Template.SpdxLicenseCompatibilityField },
       {key: "spdxid2", label: "With", sortable: false, fn: (spdxid2) -> SpdxLicense.findOne(spdxid2).spdxid},
       {key: "delete", label: "", sortable: false, tmpl: Template.SpdxLicenseCompatibilityDelete, hidden: () -> isAuthorized() },
       {key: "update", label: "", sortable: false, tmpl: Template.SpdxLicenseCompatibilityEdit, hidden: () -> isAuthorized() }

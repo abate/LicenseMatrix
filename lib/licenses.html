@@ -9,7 +9,8 @@
       settings=(SpdxLicenseCompatibilityTableSettings spdxid1) }}
 </template>
 
-<template name="SpdxLicenseCompatibilityTableEmpty" >
+<template name="SpdxLicenseCompatibilityField" >
+  {{getLabelCompatibility compatibility "compatibility"}}
 </template>
 
 <template name="SpdxLicenseCompatibilityForm" >
@@ -75,6 +76,11 @@
   {{/if}}
 </template>
 
+<template name="afCheckboxPlus">
+  <input class="orlaterbox" type="checkbox" value="true" {{atts}}/>
+  <label style="width: 22px;" for={{atts.id}}></label>
+</template>
+
 <template name="spdxLicenseForm">
   <strong>{{spdxid}}</strong>
   <ul>
@@ -95,13 +101,14 @@
   </div>
   <div class="row">
     {{#if isInRole 'admin,editor'}}
+      <label>I want to release this project under {{spdxid}}. Therefore : </label>
       {{#autoForm id="spdxLicenseCompatibilityForm" type="insert"
         collection="SpdxLicenseCompatibility" class="form-inline"}}
           {{ spdxid }}
           {{> afQuickField name="spdxid1" value=_id type="hidden"}}
-          {{> afQuickField name="orlater"}}
-          {{> afQuickField name="exceptions" class="col-md-3"}}
-          {{> afQuickField name="compatibility" class="col-md-3"}}
+          {{> afQuickField name="orlater" label=false }} <b>with</b>
+          {{> afQuickField name="exceptions" class="col-md-3"}}<b>is</b>
+          {{> afQuickField name="compatibility" class="col-md-3" options=compatibilityOptions}}<b>with</b>
           {{> afQuickField name="spdxid2" class="col-md-3"}}
           <button type="submit" class="btn btn-primary">Add</button>
       {{/autoForm}}

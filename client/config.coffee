@@ -42,3 +42,18 @@ Accounts.ui.config
           false
     }
   ]
+
+AutoForm.addInputType 'boolean-checkbox-plus',
+  template: 'afCheckboxPlus'
+  valueOut: ->
+    ! !@is(':checked')
+  valueConverters:
+    'string': AutoForm.valueConverters.booleanToString
+    'stringArray': AutoForm.valueConverters.booleanToStringArray
+    'number': AutoForm.valueConverters.booleanToNumber
+    'numberArray': AutoForm.valueConverters.booleanToNumberArray
+  contextAdjust: (context) ->
+    if context.value == true
+      context.atts.checked = ''
+    delete context.atts.required
+    context

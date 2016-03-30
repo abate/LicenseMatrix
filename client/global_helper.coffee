@@ -17,6 +17,9 @@ Template.registerHelper "getRealName", (userId) ->
 Template.registerHelper "getLabel", (value,parameter) ->
   _.findWhere(Schemas.SpdxLicense.schema(parameter).autoform.afFieldInput.options, value: value).label
 
+Template.registerHelper "getLabelCompatibility", (value,parameter) ->
+  _.findWhere(Schemas.SpdxLicenseCompatibility.schema(parameter).autoform.afFieldInput.options, value: value).label
+
 Template.registerHelper "debug", (optionalValue) ->
     console.log("Current Context")
     console.log("====================")
