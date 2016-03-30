@@ -47,6 +47,10 @@ Template.spdxLicenseForm.helpers
   'emptySpdxLicenseCompatibility': (spdxid) ->
     SpdxLicenseCompatibility.find({ spdxid1: spdxid }).count() == 0
 
+Template.quickForm_MatrixForm.helpers
+  'emptySpdxLicenseCompatibility': (spdxid) ->
+    SpdxLicenseCompatibility.find({ spdxid1: spdxid }).count() == 0
+
 AutoForm.hooks
   spdxLicenseForm:
     onSubmit: (insertDoc, updateDoc, currentDoc) ->

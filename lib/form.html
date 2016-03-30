@@ -6,12 +6,12 @@
         License Compatibility Form
       </div>
       <div class="col-md-2">
-        {{#if atts.doc.verified }}
-          <!-- <div>Verified by {{getRealName atts.doc.verifiedBy}}</div> -->
+        <!-- {{#if atts.doc.verified }}
+          <div>Verified by {{getRealName atts.doc.verifiedBy}}</div>
           <i class="fa fa-lock"></i>
         {{else}}
           <i class="fa fa-unlock"></i>
-        {{/if}}
+        {{/if}} -->
       </div>
     </div>
   </legend>
@@ -23,19 +23,14 @@
 
 <template name="quickForm_MatrixForm">
   {{> MatrixFormHeading }}
-  {{#if isInRole 'admin,editor'}}
-    {{#autoForm id="MatrixForm" class="clearfix"
-      collection="SpdxLicenseCompatibility" omitFields="spdxid1,spdxid2,verifiedBy"
-      type="update" doc=atts.doc }}
-      <fieldset>
-        {{> afQuickFields }}
-        <div><button type="submit" class="btn btn-primary">Submit</button></div>
-      </fieldset>
-    {{/autoForm}}
-  {{else}}
-    <h4>Licence Compatibility Metadata</h4>
+
+  {{#unless emptySpdxLicenseCompatibility atts.doc.spdxid1 }}
     {{> SpdxLicenseCompatibilityTable spdxid1=atts.doc.spdxid1 }}
-  {{/if}}
+  {{/unless}}
+
+  {{#unless emptySpdxLicenseCompatibility atts.doc.spdxid2 }}
+    {{> SpdxLicenseCompatibilityTable spdxid1=atts.doc.spdxid2 }}
+  {{/unless}}
 
   {{#unless hascomments atts.doc._id }}
     <div>Nobody has submitted information about these licences. Be the first !</div>
