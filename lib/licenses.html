@@ -101,7 +101,7 @@
   </div>
   <div class="row">
     {{#if isInRole 'admin,editor'}}
-      <label>I want to release this project under {{spdxid}}. Therefore : </label>
+      <h3>I want to release a project under {{spdxid}}. Therefore : </h3>
       {{#autoForm id="spdxLicenseCompatibilityForm" type="insert"
         collection="SpdxLicenseCompatibility" class="form-inline"}}
           {{ spdxid }}
@@ -192,4 +192,18 @@
       {{ take key='load-more' default='Load more comments' }}
     </button>
   {{/if}}
+</template>
+
+<template name="MassCompatibilityForm">
+  <div class = "panel panel-default">
+    <div class = "panel-heading">
+      <h3 class = "panel-title">{{spdxid}}</h3>
+    </div>
+
+    <div class = "panel-body">
+    {{#each License}}
+      <input type="chechbox" value="{{this}}" />
+    {{/each}}
+    </div>
+  </div>
 </template>

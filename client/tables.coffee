@@ -93,7 +93,7 @@ Template.SpdxLicenseCompatibilityTable.helpers
       {key: "compatibility", label: "Compatibility", sortable: false, tmpl: Template.SpdxLicenseCompatibilityField },
       {key: "spdxid2", label: "With", sortable: false, fn: (spdxid2) -> SpdxLicense.findOne(spdxid2).spdxid},
       {key: "orlater2", label: "", sortable: false, fn: (orlater) -> if orlater == true then "+" else ""},
-      {key: "relicenseto", label: "Re-License To", sortable: false, fn: (relicenseto) -> SpdxLicense.findOne(relicenseto).spdxid},
+      {key: "relicenseto", label: "Re-License To", sortable: false, fn: (relicenseto) -> if relicenseto then SpdxLicense.findOne(relicenseto).spdxid},
       {key: "orlater3", label: "", sortable: false, fn: (orlater) -> if orlater == true then "+" else ""},
       {key: "delete", label: "", sortable: false, tmpl: Template.SpdxLicenseCompatibilityDelete, hidden: () -> isAuthorized() },
       {key: "update", label: "", sortable: false, tmpl: Template.SpdxLicenseCompatibilityEdit, hidden: () -> isAuthorized() }
@@ -116,7 +116,7 @@ Template.UserTable.helpers
       { key: 'profile.lastName', label: 'lastName' }
       { key: 'roles', label: 'Roles' }
       { key: 'createdAt', label: 'CreatedAt' },
-      { key: 'actions', label: 'Actions', tmpl: Template.UserActions }
+      { key: 'actions', label: 'Actions', tmpl: Template.userActions }
     ]
 
 Template.ModerationTable.helpers

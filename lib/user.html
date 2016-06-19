@@ -5,7 +5,7 @@
   {{/if}}
 </template>
 
-<template name="UserActions">
+<template name="userActions">
   {{#afModal class="fa fa-pencil fa-fw" template="UserForm" collection="Meteor.users" operation="update" doc=_id }}
   {{/afModal}}
   {{#afModal class="fa fa-times fa-fw" collection="Meteor.users" operation="remove" doc=_id}}

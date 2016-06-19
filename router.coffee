@@ -24,6 +24,15 @@ Router.route '/licenses/:spdxid', {
   data: () ->
     SpdxLicense.findOne ({spdxid: this.params.spdxid})
 }
+
+Router.route '/licenses/form/:spdxid', {
+  name: 'masslicenseupdate'
+  template: 'MassCompatibilityForm'
+  data: () ->
+    licenses = SpdxLicense
+    { spdxid: spdxid, licenses : licenses }
+}
+
 Router.route '/download', {
   name: 'download'
   template: 'DownloadData'
